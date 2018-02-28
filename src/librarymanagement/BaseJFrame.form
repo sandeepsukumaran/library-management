@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="bounds" type="java.awt.Rectangle" editor="org.netbeans.beaninfo.editors.RectangleEditor">
@@ -141,7 +141,7 @@
                           <Component id="CityjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="StatejComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="38" max="32767" attributes="0"/>
+                      <EmptySpace pref="76" max="32767" attributes="0"/>
                       <Component id="RegisterUserjButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                   </Group>
@@ -350,13 +350,29 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="RegisterNewUserjLabel1" min="-2" pref="170" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="178" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="SearchjTextField" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="BCSearchjButton" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="SearchjTextField" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="BCSearchjButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="BCResjScrollPane" alignment="0" min="-2" pref="328" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="BCBorrowerCardjLabel" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="BCBorrowerCardjTextField" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="BCCheckoutjButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -371,7 +387,16 @@
                           <Component id="SearchjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="BCSearchjButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="257" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="BCResjScrollPane" min="-2" pref="117" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="BCBorrowerCardjLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="BCBorrowerCardjTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="BCCheckoutjButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="78" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -410,6 +435,67 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCSearchjButton.setEnabled(false);&#xd;&#xa;"/>
+              </AuxValues>
+            </Component>
+            <Container class="javax.swing.JScrollPane" name="BCResjScrollPane">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));&#xd;&#xa;"/>
+                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));&#xd;&#xa;"/>
+                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+              </AuxValues>
+
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+              <SubComponents>
+                <Component class="javax.swing.JTable" name="BCResjTable">
+                  <Properties>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="4" rowCount="5">
+                        <Column editable="false" title="ISBN" type="java.lang.Object"/>
+                        <Column editable="false" title="Title" type="java.lang.Object"/>
+                        <Column editable="false" title="Author(s)" type="java.lang.Object"/>
+                        <Column editable="false" title="Availability" type="java.lang.Object"/>
+                      </Table>
+                    </Property>
+                  </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BCResjTable.setModel(new javax.swing.table.DefaultTableModel(&#xa;            new Object [][] {&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null}&#xa;            },&#xa;            new String [] {&#xa;                &quot;ISBN&quot;, &quot;Title&quot;, &quot;Author(s)&quot;, &quot;Availability&quot;&#xa;            }&#xa;        ) {&#xa;            /*boolean[] canEdit = new boolean [] {&#xa;                false, false, false, false&#xa;            };*/&#xa;&#xa;            public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;                //return canEdit [columnIndex];&#xa;                return false;&#xa;            }&#xa;        });"/>
+                  </AuxValues>
+                </Component>
+              </SubComponents>
+            </Container>
+            <Component class="javax.swing.JLabel" name="BCBorrowerCardjLabel">
+              <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Borrower Card No."/>
+                <Property name="opaque" type="boolean" value="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="BCBorrowerCardjTextField">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="Enter borrower&apos;s card number"/>
+              </Properties>
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="BCBorrowerCardjTextFieldKeyReleased"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="BCBorrowerCardjTextFieldKeyTyped"/>
+              </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTextField(6)&#xd;&#xa;"/>
+              </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="BCCheckoutjButton">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="CHECKOUT"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCCheckoutjButton.setEnabled(false);&#xd;&#xa;"/>
               </AuxValues>
             </Component>
           </SubComponents>

@@ -6,6 +6,7 @@
 package librarymanagement;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ import java.text.ParseException;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -81,6 +84,15 @@ public class BaseJFrame extends javax.swing.JFrame {
         SearchjTextField.setText("Enter ISBN, Book name, Author name");
         BCSearchjButton = new javax.swing.JButton();
         BCSearchjButton.setEnabled(false);
+        BCResjScrollPane = new javax.swing.JScrollPane();
+        BCResjTable = new javax.swing.JTable();
+        BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //Only allow one row to be selected at a time
+        BCBorrowerCardjLabel = new javax.swing.JLabel();
+        BCBorrowerCardjTextField = new javax.swing.JTextField(6)
+        ;
+        BCCheckoutjButton = new javax.swing.JButton();
+        BCCheckoutjButton.setEnabled(false);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 300, 300));
@@ -216,7 +228,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CityjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(StatejComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addComponent(RegisterUserjButton)
                 .addGap(19, 19, 19))
         );
@@ -249,18 +261,93 @@ public class BaseJFrame extends javax.swing.JFrame {
         BCSearchjButton.setText("SEARCH");
         BCSearchjButton.setToolTipText("Search books");
 
+        BCResjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+        BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
+
+        BCResjTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ISBN", "Title", "Author(s)", "Availability"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        BCResjTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "ISBN", "Title", "Author(s)", "Availability"
+            }
+        ) {
+            /*boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };*/
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                //return canEdit [columnIndex];
+                return false;
+            }
+        });
+        BCResjScrollPane.setViewportView(BCResjTable);
+
+        BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
+
+        BCBorrowerCardjLabel.setBackground(new java.awt.Color(255, 255, 255));
+        BCBorrowerCardjLabel.setText("Borrower Card No.");
+        BCBorrowerCardjLabel.setOpaque(true);
+
+        BCBorrowerCardjTextField.setToolTipText("Enter borrower's card number");
+        BCBorrowerCardjTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                BCBorrowerCardjTextFieldKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                BCBorrowerCardjTextFieldKeyTyped(evt);
+            }
+        });
+
+        BCCheckoutjButton.setText("CHECKOUT");
+
         javax.swing.GroupLayout BookCheckoutjPanelLayout = new javax.swing.GroupLayout(BookCheckoutjPanel);
         BookCheckoutjPanel.setLayout(BookCheckoutjPanelLayout);
         BookCheckoutjPanelLayout.setHorizontalGroup(
             BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                 .addComponent(RegisterNewUserjLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 178, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(SearchjTextField)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BCSearchjButton)
+                .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
+                        .addComponent(SearchjTextField)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BCSearchjButton))
+                    .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
+                        .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(BCResjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
+                                .addComponent(BCBorrowerCardjLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(BCBorrowerCardjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(BCCheckoutjButton))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         BookCheckoutjPanelLayout.setVerticalGroup(
@@ -272,7 +359,15 @@ public class BaseJFrame extends javax.swing.JFrame {
                 .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SearchjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BCSearchjButton))
-                .addContainerGap(257, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BCResjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(BCBorrowerCardjLabel)
+                    .addComponent(BCBorrowerCardjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(BCCheckoutjButton)
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         AddUserTab.addTab("Books Checkout", BookCheckoutjPanel);
@@ -374,6 +469,22 @@ public class BaseJFrame extends javax.swing.JFrame {
             BCSearchjButton.setEnabled(true);
     }//GEN-LAST:event_SearchjTextFieldKeyReleased
 
+    private void BCBorrowerCardjTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BCBorrowerCardjTextFieldKeyReleased
+        if(BCBorrowerCardjTextField.getText().length()==0)
+            BCCheckoutjButton.setEnabled(false);
+        else{//some text is in borrower card number field
+            if((BCResjTable.getSelectedRowCount()!=0) && (BCResjTableData!=null) && (BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3).equals("IN")))
+                //some row in the table has been selected
+                BCCheckoutjButton.setEnabled(true);
+            else;
+        }
+    }//GEN-LAST:event_BCBorrowerCardjTextFieldKeyReleased
+
+    private void BCBorrowerCardjTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BCBorrowerCardjTextFieldKeyTyped
+        if(!Character.isDigit(evt.getKeyChar()))
+            evt.consume();
+    }//GEN-LAST:event_BCBorrowerCardjTextFieldKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -409,6 +520,11 @@ public class BaseJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField AddressL1jTextField;
     private javax.swing.JTextField AddressL2jTextField;
     private javax.swing.JLabel AddressjLabel;
+    private javax.swing.JLabel BCBorrowerCardjLabel;
+    private javax.swing.JTextField BCBorrowerCardjTextField;
+    private javax.swing.JButton BCCheckoutjButton;
+    private javax.swing.JScrollPane BCResjScrollPane;
+    private javax.swing.JTable BCResjTable;
     private javax.swing.JButton BCSearchjButton;
     private javax.swing.JPanel BookCheckoutjPanel;
     private javax.swing.JTextField CityjTextField;
@@ -427,6 +543,7 @@ public class BaseJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private java.util.ResourceBundle reader = null;
     private java.sql.Connection dbConnection = null;
+    private TableModel BCResjTableData;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
