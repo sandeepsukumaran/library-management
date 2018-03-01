@@ -464,7 +464,7 @@
                   </Properties>
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time"/>
-                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BCResjTable.setModel(new javax.swing.table.DefaultTableModel(&#xa;            new Object [][] {&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null}&#xa;            },&#xa;            new String [] {&#xa;                &quot;ISBN&quot;, &quot;Title&quot;, &quot;Author(s)&quot;, &quot;Availability&quot;&#xa;            }&#xa;        ) {&#xa;            /*boolean[] canEdit = new boolean [] {&#xa;                false, false, false, false&#xa;            };*/&#xa;&#xa;            public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;                //return canEdit [columnIndex];&#xa;                return false;&#xa;            }&#xa;        });"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BCResjTable.setModel(new javax.swing.table.DefaultTableModel(&#xa;            new Object [][] {&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null},&#xa;                {null, null, null, null}&#xa;            },&#xa;            new String [] {&#xa;                &quot;ISBN&quot;, &quot;Title&quot;, &quot;Author(s)&quot;, &quot;Availability&quot;&#xa;            }&#xa;        ) {&#xa;            /*boolean[] canEdit = new boolean [] {&#xa;                false, false, false, false&#xa;            };*/&#xa;&#xa;            public boolean isCellEditable(int rowIndex, int columnIndex) {&#xa;                //return canEdit [columnIndex];&#xa;                return false;&#xa;            }&#xa;        });&#xa;&#xa;//Colour availability Column based on data&#xa;BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){&#xa;    @Override&#xa;    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){&#xa;        Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);&#xa;        if (column != 3)&#xa;            return c;&#xa;        else if(((String)value).equals(&quot;IN&quot;))&#xa;            c.setBackground(Color.GREEN);&#xa;        else&#xa;            c.setBackground(Color.RED);&#xa;        return c;&#xa;    }&#xa;});&#xa;"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
@@ -494,6 +494,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="CHECKOUT"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BCCheckoutjButtonActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCCheckoutjButton.setEnabled(false);&#xd;&#xa;"/>
               </AuxValues>

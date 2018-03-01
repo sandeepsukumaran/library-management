@@ -6,15 +6,22 @@
 package librarymanagement;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -305,6 +312,21 @@ public class BaseJFrame extends javax.swing.JFrame {
                 return false;
             }
         });
+
+        //Colour availability Column based on data
+        BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+                Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (column != 3)
+                return c;
+                else if(((String)value).equals("IN"))
+                c.setBackground(Color.GREEN);
+                else
+                c.setBackground(Color.RED);
+                return c;
+            }
+        });
         BCResjScrollPane.setViewportView(BCResjTable);
 
         BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
@@ -324,6 +346,11 @@ public class BaseJFrame extends javax.swing.JFrame {
         });
 
         BCCheckoutjButton.setText("CHECKOUT");
+        BCCheckoutjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BCCheckoutjButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout BookCheckoutjPanelLayout = new javax.swing.GroupLayout(BookCheckoutjPanel);
         BookCheckoutjPanel.setLayout(BookCheckoutjPanelLayout);
@@ -485,6 +512,51 @@ public class BaseJFrame extends javax.swing.JFrame {
             evt.consume();
     }//GEN-LAST:event_BCBorrowerCardjTextFieldKeyTyped
 
+    private void BCCheckoutjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCCheckoutjButtonActionPerformed
+        //validate all necessary conditions
+        String borrower_card_number = BCBorrowerCardjTextField.getText();
+        int selected_row_index = BCResjTable.getSelectedRow();
+        if(!borrower_card_number.matches("\\d+(\\d+)?")){
+            JOptionPane.showMessageDialog(this, "Please enter a valid Borrower card number.", "Invalid Borrower Card Number", JOptionPane.ERROR_MESSAGE);
+            BCBorrowerCardjTextField.setText("");
+            return;
+        }else;
+        if(selected_row_index == -1){
+            JOptionPane.showMessageDialog(this, "Please select a book from table.", "No selection", JOptionPane.ERROR_MESSAGE);
+            return;
+        }else;
+        //Might not be necessary
+        if(BCResjTable.getSelectedRowCount()>1){
+            JOptionPane.showMessageDialog(this, "Please select a single book from table.", "Multiple selection", JOptionPane.ERROR_MESSAGE);
+            return;
+        }else;
+        
+        try {
+            //Don't permit check out if borrower already owns 3 (MAX_BOOKS_PER_BORROWER) books
+            borrower_possession_ps.clearParameters();
+            borrower_possession_ps.setString(1,borrower_card_number);
+            ResultSet rs = borrower_possession_ps.executeQuery();
+            //rs will contain exactly one row and one column
+            rs.next();
+            int possession = rs.getInt("POSSESSION");
+            if (possession == 3){
+                JOptionPane.showMessageDialog(this, "Borrower already holds the permitted quota.", "Limit Reached", JOptionPane.ERROR_MESSAGE);
+                return;
+            }else;
+            
+            //Issue the book
+            String selected_isbn = (String) BCResjTableData.getValueAt(selected_row_index, 0);
+            book_checkout_ps.clearParameters();
+            book_checkout_ps.setString(1,selected_isbn);
+            book_checkout_ps.setString(2, borrower_card_number);
+            book_checkout_ps.executeUpdate();
+            BCResjTableData.setValueAt("OUT", selected_row_index, 3);
+            JOptionPane.showMessageDialog(this, "Book has been loaned to borrower.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            System.err.println("SQL Exception when Book Checkout button pressed.");
+        }
+    }//GEN-LAST:event_BCCheckoutjButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -544,6 +616,8 @@ public class BaseJFrame extends javax.swing.JFrame {
     private java.util.ResourceBundle reader = null;
     private java.sql.Connection dbConnection = null;
     private TableModel BCResjTableData;
+    private PreparedStatement borrower_possession_ps;
+    private PreparedStatement book_checkout_ps;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -555,7 +629,16 @@ public class BaseJFrame extends javax.swing.JFrame {
         //System.out.println(reader.getString("db.password"));
         dbConnection = java.sql.DriverManager.getConnection(reader.getString("db.url"),reader.getString("db.username"),reader.getString("db.password"));
         //dbConnection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/LIBRARY","librarian","booklover");
+        borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
+        book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
+    public static final int MAX_BOOKS_PER_BORROWER = 3;
 }
+/*
+    USE ISBN10
+    BOOK_LOANS: DATE_IN DEFAULT NULL
+    BORROWER AUGMENTED WITH INTEGER FIELD POSSESSION
+    BOOK AUGMENTED WITH AVAILABILITY BOOLEAN TYPE
+*/
