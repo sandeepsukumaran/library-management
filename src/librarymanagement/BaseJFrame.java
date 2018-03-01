@@ -573,7 +573,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         else;
         
         String[] keywords = search_string.split(" ");
-        String statement_string;
+        String statement_string = "SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE";
+        ArrayList<String> parameters = new ArrayList<>();
         ResultSet rs = null;
         HashMap ISBNset = new HashMap();
         Vector<Vector<String/*Object*/>> rsData = new Vector<>();
@@ -592,10 +593,48 @@ public class BaseJFrame extends javax.swing.JFrame {
                     single_key_10_digits_ps.setString(1, keyword);
                     single_key_10_digits_ps.setString(2, "%"+keyword+"%");
                     rs = single_key_10_digits_ps.executeQuery();
-                }
+                }else if(keyword.matches("\\d+")){
+                    //title entered
+                    single_key_multi_digits_ps.clearParameters();
+                    single_key_multi_digits_ps.setString(1, "%"+keyword+"%");
+                    rs = single_key_multi_digits_ps.executeQuery();
+                }else if(keyword.matches("[a-zA-Z]+")){
+                    //title or author entered
+                    single_key_alpha_ps.clearParameters();
+                    single_key_alpha_ps.setString(1, "%"+keyword+"%");
+                    single_key_alpha_ps.setString(2, "%"+keyword+"%");
+                    rs = single_key_alpha_ps.executeQuery();
+                }else if(keyword.matches("\\w+")){
+                    //title entered
+                    single_key_alnum_ps.clearParameters();
+                    single_key_alnum_ps.setString(1, "%"+keyword+"%");
+                    rs = single_key_alnum_ps.executeQuery();
+                }else;
             }else{
             //Multiple keywords case
-                rs=null;
+                for(String keyword:keywords){
+                    if(keyword.matches("\\d{10}")){
+                        statement_string += " ISBN = ? OR TITLE LIKE ?";
+                        parameters.add(keyword);
+                        parameters.add("%"+keyword+"%");
+                    }else if(keyword.matches("\\d+")){
+                        statement_string += " TITLE LIKE ?";
+                        parameters.add("%"+keyword+"%");
+                    }else if(keyword.matches("[a-zA-Z]+")){
+                        statement_string += " TITLE LIKE ? OR NAME LIKE ?";
+                        parameters.add("%"+keyword+"%");
+                        parameters.add("%"+keyword+"%");
+                    }else if(keyword.matches("\\w+")){
+                        statement_string += " TITLE LIKE ?";
+                        parameters.add("%"+keyword+"%");
+                    }else;
+                }
+                
+                multi_key_ps = dbConnection.prepareStatement(statement_string);
+                for(int i=0;i<parameters.size();++i)
+                    multi_key_ps.setString(i, parameters.get(i));
+                
+                rs = multi_key_ps.executeQuery();
             }
             
             //Operate on rs
@@ -700,6 +739,10 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement borrower_possession_ps;
     private PreparedStatement book_checkout_ps;
     private PreparedStatement single_key_10_digits_ps;
+    private PreparedStatement single_key_multi_digits_ps;
+    private PreparedStatement single_key_alpha_ps;
+    private PreparedStatement single_key_alnum_ps;
+    private PreparedStatement multi_key_ps;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -714,6 +757,9 @@ public class BaseJFrame extends javax.swing.JFrame {
         borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
         book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
         single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?");
+        single_key_multi_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
+        single_key_alpha_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? OR NAME LIKE ?");
+        single_key_alnum_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
