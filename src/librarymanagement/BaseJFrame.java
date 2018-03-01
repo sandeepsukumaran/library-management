@@ -11,17 +11,19 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.MaskFormatter;
 
@@ -267,6 +269,11 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         BCSearchjButton.setText("SEARCH");
         BCSearchjButton.setToolTipText("Search books");
+        BCSearchjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BCSearchjButtonActionPerformed(evt);
+            }
+        });
 
         BCResjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
         BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
@@ -500,7 +507,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         if(BCBorrowerCardjTextField.getText().length()==0)
             BCCheckoutjButton.setEnabled(false);
         else{//some text is in borrower card number field
-            if((BCResjTable.getSelectedRowCount()!=0) && (BCResjTableData!=null) && (BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3).equals("IN")))
+            if((BCResjTable.getSelectedRowCount()!=0) && (BCResjTableData!=null) && (BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3)).equals("IN")/*(((String)(BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3))).equals("IN"))*/)
                 //some row in the table has been selected
                 BCCheckoutjButton.setEnabled(true);
             else;
@@ -556,6 +563,79 @@ public class BaseJFrame extends javax.swing.JFrame {
             System.err.println("SQL Exception when Book Checkout button pressed.");
         }
     }//GEN-LAST:event_BCCheckoutjButtonActionPerformed
+
+    private void BCSearchjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCSearchjButtonActionPerformed
+        //SEARCH FUNCTIONALITY
+        String search_string = SearchjTextField.getText();
+        //just in case:
+        if (search_string.length()==0)
+            return;
+        else;
+        
+        String[] keywords = search_string.split(" ");
+        String statement_string;
+        ResultSet rs = null;
+        HashMap ISBNset = new HashMap();
+        Vector<Vector<String/*Object*/>> rsData = new Vector<>();
+        Vector<String> columnNames = new Vector<>();
+        //ArrayList<ArrayList<String/*Object*/>> processed_rsData = new ArrayList<>(); //Contains authors in one row
+        try{
+            columnNames.clear();
+            rsData.clear();
+            //Only one keyword case
+            if(keywords.length == 1){
+                String keyword = keywords[0];
+                if(keyword.matches("\\d{10}")){
+                    //ISBN or title entered
+                    //statement_string = "SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?";
+                    single_key_10_digits_ps.clearParameters();
+                    single_key_10_digits_ps.setString(1, keyword);
+                    single_key_10_digits_ps.setString(2, "%"+keyword+"%");
+                    rs = single_key_10_digits_ps.executeQuery();
+                }
+            }else{
+            //Multiple keywords case
+                rs=null;
+            }
+            
+            //Operate on rs
+            if(rs==null){
+                JOptionPane.showMessageDialog(this, "No results found.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }else;
+            ResultSetMetaData rsmeta = rs.getMetaData();
+            int columnCount = rsmeta.getColumnCount();
+            while(rs.next()){
+                if(ISBNset.containsKey(rs.getString(1))){
+                    //If ISBN has been seen before, simply add author to list of authors. Do NOT add to list of books i.e. rsData
+                    ISBNset.put(rs.getString(1), ((String)ISBNset.get(rs.getString(1)))+","+rs.getString(3));
+                    continue;
+                }else
+                    ISBNset.put(rs.getString(1), rs.getString(3));
+                
+                Vector<String> row = new Vector<>();
+                for(int i=1;i<=columnCount;++i){
+                    row.add(rs.getString(i));
+                    columnNames.add(rsmeta.getColumnName(i));
+                }
+                rsData.add(row);    
+            }
+            
+            //Update list of authors
+            Vector<String>row;
+            for(int i=0;i<rsData.size();++i){
+                String authors = (String)ISBNset.get(rsData.get(i).get(0));
+                if(authors.contains(",")){
+                    row = rsData.get(i);
+                    row.set(2,authors);
+                    rsData.set(i,row);
+                    //rsData.get(i).set(2,authors);// WILL THIS WORK?
+                }else;
+            }
+            //rsData now contains the data to be displayed.
+            BCResjTableData.setDataVector(rsData, columnNames);
+        }catch(SQLException e){System.err.println("SQL Exception in Search button press in checkout.");}
+    }//GEN-LAST:event_BCSearchjButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -615,9 +695,11 @@ public class BaseJFrame extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private java.util.ResourceBundle reader = null;
     private java.sql.Connection dbConnection = null;
-    private TableModel BCResjTableData;
+    //private TableModel BCResjTableData;
+    private DefaultTableModel BCResjTableData;
     private PreparedStatement borrower_possession_ps;
     private PreparedStatement book_checkout_ps;
+    private PreparedStatement single_key_10_digits_ps;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -631,6 +713,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         //dbConnection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/LIBRARY","librarian","booklover");
         borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
         book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
+        single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?");
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
@@ -641,4 +724,12 @@ public class BaseJFrame extends javax.swing.JFrame {
     BOOK_LOANS: DATE_IN DEFAULT NULL
     BORROWER AUGMENTED WITH INTEGER FIELD POSSESSION
     BOOK AUGMENTED WITH AVAILABILITY BOOLEAN TYPE
+    
+    IN SEARCH FIELD:
+    -ASSUME ISBN10 MUST BE FULLY ENTERED
+    -SPLIT ENTERED WORDS ON SPACE
+    -IF WORD IS 10 DIGITS CANDIDATE FOR ISBN10 AND TITLE
+    -IF WORD IS DIGITS(NOT 10 LONG) CANDIDATE FOR TITLE SUBSTRING
+    -IF WORD IS ALNUM CANDIDATE FOR TITLE
+    -IF WORD IS ALPHA CANDIDATE FOR TITLE, AUTHOR
 */

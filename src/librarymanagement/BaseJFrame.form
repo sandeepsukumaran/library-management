@@ -433,6 +433,9 @@
                 <Property name="text" type="java.lang.String" value="SEARCH"/>
                 <Property name="toolTipText" type="java.lang.String" value="Search books"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BCSearchjButtonActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCSearchjButton.setEnabled(false);&#xd;&#xa;"/>
               </AuxValues>
