@@ -55,6 +55,7 @@ public class BaseJFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        FinesFilterbuttonGroup = new javax.swing.ButtonGroup();
         AddUserTab = new javax.swing.JTabbedPane();
         AddUserjPanel = new javax.swing.JPanel();
         RegisterNewUserjLabel = new javax.swing.JLabel();
@@ -86,7 +87,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         StatejComboBox = new javax.swing.JComboBox<>();
         RegisterUserjButton = new javax.swing.JButton();
         BookCheckoutjPanel = new javax.swing.JPanel();
-        RegisterNewUserjLabel1 = new javax.swing.JLabel();
+        BooksCheckoutjLabel = new javax.swing.JLabel();
         SearchjTextField = new javax.swing.JTextField();
         SearchjTextField.setForeground(Color.GRAY);
         SearchjTextField.setFont(new Font("Tahoma",Font.ITALIC,11));
@@ -102,6 +103,32 @@ public class BaseJFrame extends javax.swing.JFrame {
         ;
         BCCheckoutjButton = new javax.swing.JButton();
         BCCheckoutjButton.setEnabled(false);
+        CheckInjPanel = new javax.swing.JPanel();
+        CheckInjLabel = new javax.swing.JLabel();
+        CheckInSearchjTextField = new javax.swing.JTextField();
+        CheckInSearchjTextField.setForeground(Color.GRAY);
+        CheckInSearchjTextField.setFont(new Font("Tahoma",Font.ITALIC,11));
+        CheckInSearchjTextField.setText("Enter ISBN, Borrower Card No.,Book name");
+        CheckInSearchjButton = new javax.swing.JButton();
+        CheckInjScrollPane = new javax.swing.JScrollPane();
+        CheckInjTable = new javax.swing.JTable();
+        CheckInjButton = new javax.swing.JButton();
+        FinesjPanel = new javax.swing.JPanel();
+        FinesjLabel = new javax.swing.JLabel();
+        FinesFilterjLabel = new javax.swing.JLabel();
+        FinesFilterAlljRadioButton = new javax.swing.JRadioButton();
+        FinesFilterUnpaidjRadioButton = new javax.swing.JRadioButton();
+        ShowFinesjButton = new javax.swing.JButton();
+        FinesjScrollPane = new javax.swing.JScrollPane();
+        FinesjTable = new javax.swing.JTable();
+        FinesBorrowerIDjLabel = new javax.swing.JLabel();
+        FinesBorrowerIDjTextField = new javax.swing.JTextField(6);
+        FinesBorrowerIDjTextField.setEnabled(false);
+        FinesPayAmountjLabel = new javax.swing.JLabel();
+        FinesPayAmountjFormattedTextField = new javax.swing.JFormattedTextField();
+        FinesPayAmountjFormattedTextField.setEnabled(false);
+        FinesPayjButton = new javax.swing.JButton();
+        FinesUpdatejButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 300, 300));
@@ -237,7 +264,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CityjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(StatejComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                 .addComponent(RegisterUserjButton)
                 .addGap(19, 19, 19))
         );
@@ -246,12 +273,12 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         BookCheckoutjPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        RegisterNewUserjLabel1.setBackground(java.awt.Color.black);
-        RegisterNewUserjLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        RegisterNewUserjLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        RegisterNewUserjLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        RegisterNewUserjLabel1.setText("Books Checkout  ");
-        RegisterNewUserjLabel1.setOpaque(true);
+        BooksCheckoutjLabel.setBackground(java.awt.Color.black);
+        BooksCheckoutjLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        BooksCheckoutjLabel.setForeground(new java.awt.Color(255, 255, 255));
+        BooksCheckoutjLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        BooksCheckoutjLabel.setText("Books Checkout  ");
+        BooksCheckoutjLabel.setOpaque(true);
 
         SearchjTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -364,7 +391,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         BookCheckoutjPanelLayout.setHorizontalGroup(
             BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
-                .addComponent(RegisterNewUserjLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(BooksCheckoutjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                 .addContainerGap()
@@ -388,7 +415,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(RegisterNewUserjLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(BooksCheckoutjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SearchjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -401,10 +428,211 @@ public class BaseJFrame extends javax.swing.JFrame {
                     .addComponent(BCBorrowerCardjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(BCCheckoutjButton)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
         AddUserTab.addTab("Books Checkout", BookCheckoutjPanel);
+
+        CheckInjPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        CheckInjLabel.setBackground(java.awt.Color.black);
+        CheckInjLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        CheckInjLabel.setForeground(new java.awt.Color(255, 255, 255));
+        CheckInjLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        CheckInjLabel.setText("Books Check-In  ");
+        CheckInjLabel.setOpaque(true);
+
+        CheckInSearchjButton.setBackground(new java.awt.Color(255, 255, 255));
+        CheckInSearchjButton.setText("SEARCH");
+
+        CheckInjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+
+        CheckInjTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Loan ID", "ISBN", "Borrower Card No."
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        CheckInjScrollPane.setViewportView(CheckInjTable);
+
+        CheckInjButton.setBackground(new java.awt.Color(255, 255, 255));
+        CheckInjButton.setText("Check In");
+
+        javax.swing.GroupLayout CheckInjPanelLayout = new javax.swing.GroupLayout(CheckInjPanel);
+        CheckInjPanel.setLayout(CheckInjPanelLayout);
+        CheckInjPanelLayout.setHorizontalGroup(
+            CheckInjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CheckInjPanelLayout.createSequentialGroup()
+                .addComponent(CheckInjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(CheckInjPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(CheckInjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(CheckInjPanelLayout.createSequentialGroup()
+                        .addComponent(CheckInSearchjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(CheckInSearchjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CheckInjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CheckInjPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(CheckInjButton)
+                .addContainerGap())
+        );
+        CheckInjPanelLayout.setVerticalGroup(
+            CheckInjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(CheckInjPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(CheckInjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(CheckInjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(CheckInSearchjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(CheckInSearchjButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(CheckInjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(CheckInjButton)
+                .addContainerGap(123, Short.MAX_VALUE))
+        );
+
+        AddUserTab.addTab("Books Check-In", CheckInjPanel);
+
+        FinesjPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        FinesjLabel.setBackground(java.awt.Color.black);
+        FinesjLabel.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        FinesjLabel.setForeground(new java.awt.Color(255, 255, 255));
+        FinesjLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        FinesjLabel.setText("Fines  ");
+        FinesjLabel.setOpaque(true);
+
+        FinesFilterjLabel.setText("Filter:");
+
+        FinesFilterAlljRadioButton.setBackground(new java.awt.Color(255, 255, 255));
+        FinesFilterbuttonGroup.add(FinesFilterAlljRadioButton);
+        FinesFilterAlljRadioButton.setText("ALL");
+
+        FinesFilterUnpaidjRadioButton.setBackground(new java.awt.Color(255, 255, 255));
+        FinesFilterbuttonGroup.add(FinesFilterUnpaidjRadioButton);
+        FinesFilterUnpaidjRadioButton.setText("Unpaid");
+
+        ShowFinesjButton.setBackground(new java.awt.Color(255, 255, 255));
+        ShowFinesjButton.setText("Show Fines");
+
+        FinesjTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Borrower ID", "Total Fine", "Payable Fine"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        FinesjScrollPane.setViewportView(FinesjTable);
+
+        FinesBorrowerIDjLabel.setBackground(new java.awt.Color(255, 255, 255));
+        FinesBorrowerIDjLabel.setText("Borrower ID:");
+
+        FinesPayAmountjLabel.setBackground(new java.awt.Color(255, 255, 255));
+        FinesPayAmountjLabel.setText("Amount");
+
+        FinesPayAmountjFormattedTextField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$#,##0.00"))));
+        FinesPayAmountjFormattedTextField.setText("0.00");
+
+        FinesPayjButton.setBackground(new java.awt.Color(255, 255, 255));
+        FinesPayjButton.setText("Pay");
+
+        FinesUpdatejButton.setBackground(new java.awt.Color(255, 255, 255));
+        FinesUpdatejButton.setText("Update Fines");
+
+        javax.swing.GroupLayout FinesjPanelLayout = new javax.swing.GroupLayout(FinesjPanel);
+        FinesjPanel.setLayout(FinesjPanelLayout);
+        FinesjPanelLayout.setHorizontalGroup(
+            FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(FinesjPanelLayout.createSequentialGroup()
+                .addComponent(FinesjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(FinesjPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(FinesjPanelLayout.createSequentialGroup()
+                        .addComponent(FinesFilterjLabel)
+                        .addGap(18, 18, 18)
+                        .addComponent(FinesFilterAlljRadioButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(FinesFilterUnpaidjRadioButton)
+                        .addGap(27, 27, 27)
+                        .addComponent(ShowFinesjButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(FinesjPanelLayout.createSequentialGroup()
+                        .addGroup(FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(FinesjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(FinesjPanelLayout.createSequentialGroup()
+                                .addComponent(FinesBorrowerIDjLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(FinesBorrowerIDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(FinesPayAmountjLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(FinesPayAmountjFormattedTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(FinesPayjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, FinesjPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(FinesUpdatejButton)))
+                .addContainerGap())
+        );
+        FinesjPanelLayout.setVerticalGroup(
+            FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(FinesjPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(FinesjLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FinesFilterjLabel)
+                    .addComponent(FinesFilterAlljRadioButton)
+                    .addComponent(FinesFilterUnpaidjRadioButton)
+                    .addComponent(ShowFinesjButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(FinesjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addGroup(FinesjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FinesBorrowerIDjLabel)
+                    .addComponent(FinesBorrowerIDjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(FinesPayAmountjLabel)
+                    .addComponent(FinesPayAmountjFormattedTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(FinesPayjButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+                .addComponent(FinesUpdatejButton)
+                .addGap(48, 48, 48))
+        );
+
+        AddUserTab.addTab("Fines", FinesjPanel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -718,7 +946,29 @@ public class BaseJFrame extends javax.swing.JFrame {
     private javax.swing.JTable BCResjTable;
     private javax.swing.JButton BCSearchjButton;
     private javax.swing.JPanel BookCheckoutjPanel;
+    private javax.swing.JLabel BooksCheckoutjLabel;
+    private javax.swing.JButton CheckInSearchjButton;
+    private javax.swing.JTextField CheckInSearchjTextField;
+    private javax.swing.JButton CheckInjButton;
+    private javax.swing.JLabel CheckInjLabel;
+    private javax.swing.JPanel CheckInjPanel;
+    private javax.swing.JScrollPane CheckInjScrollPane;
+    private javax.swing.JTable CheckInjTable;
     private javax.swing.JTextField CityjTextField;
+    private javax.swing.JLabel FinesBorrowerIDjLabel;
+    private javax.swing.JTextField FinesBorrowerIDjTextField;
+    private javax.swing.JRadioButton FinesFilterAlljRadioButton;
+    private javax.swing.JRadioButton FinesFilterUnpaidjRadioButton;
+    private javax.swing.ButtonGroup FinesFilterbuttonGroup;
+    private javax.swing.JLabel FinesFilterjLabel;
+    private javax.swing.JFormattedTextField FinesPayAmountjFormattedTextField;
+    private javax.swing.JLabel FinesPayAmountjLabel;
+    private javax.swing.JButton FinesPayjButton;
+    private javax.swing.JButton FinesUpdatejButton;
+    private javax.swing.JLabel FinesjLabel;
+    private javax.swing.JPanel FinesjPanel;
+    private javax.swing.JScrollPane FinesjScrollPane;
+    private javax.swing.JTable FinesjTable;
     private javax.swing.JTextField FirstNamejTextField;
     private javax.swing.JTextField LastNamejTextField;
     private javax.swing.JLabel NamejLabel;
@@ -726,10 +976,10 @@ public class BaseJFrame extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField PhonejFormattedTextField;
     private javax.swing.JLabel PhonejLabel;
     private javax.swing.JLabel RegisterNewUserjLabel;
-    private javax.swing.JLabel RegisterNewUserjLabel1;
     private javax.swing.JButton RegisterUserjButton;
     private javax.swing.JFormattedTextField SSNjFormattedTextField;
     private javax.swing.JTextField SearchjTextField;
+    private javax.swing.JButton ShowFinesjButton;
     private javax.swing.JComboBox<String> StatejComboBox;
     // End of variables declaration//GEN-END:variables
     private java.util.ResourceBundle reader = null;
@@ -743,6 +993,7 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement single_key_alpha_ps;
     private PreparedStatement single_key_alnum_ps;
     private PreparedStatement multi_key_ps;
+    private float max_fine_payable;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -778,4 +1029,12 @@ public class BaseJFrame extends javax.swing.JFrame {
     -IF WORD IS DIGITS(NOT 10 LONG) CANDIDATE FOR TITLE SUBSTRING
     -IF WORD IS ALNUM CANDIDATE FOR TITLE
     -IF WORD IS ALPHA CANDIDATE FOR TITLE, AUTHOR
+
+
+    FINES TAB:
+    -DISPLAY CARD_ID, TOTAL FINE, PAYABLE FINE
+    -FOR THE ABOVE, USE LEFT JOIN OF TWO SELECTS : ONE FOR TOTAL FINE, THE OTHER FOR PAYABLE FINE
+    -   PARSE THE TABLE AND REPLACE NULLS WITH 0.0
+    -   FINES MUST BE PAID IN FULL
+    -WHEN ROW IN TABLE IS SELECTED, UPDATED THE BORROWER ID FIELD AND MAX FINE PAYABLE FIELD(HIDDEN)
 */
