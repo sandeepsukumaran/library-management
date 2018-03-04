@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -623,6 +624,11 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         FinesUpdatejButton.setBackground(new java.awt.Color(255, 255, 255));
         FinesUpdatejButton.setText("Update Fines");
+        FinesUpdatejButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FinesUpdatejButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout FinesjPanelLayout = new javax.swing.GroupLayout(FinesjPanel);
         FinesjPanel.setLayout(FinesjPanelLayout);
@@ -1131,6 +1137,14 @@ public class BaseJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_FinesPayjButtonActionPerformed
 
+    private void FinesUpdatejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FinesUpdatejButtonActionPerformed
+        try{
+            UpdateFinesBatchJob_cs.execute();
+        }catch(SQLException e){
+            System.err.println("SQL Exception in Update Fines button ActionPerformed.");
+        }
+    }//GEN-LAST:event_FinesUpdatejButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1228,7 +1242,7 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement check_in_update_ps;
     private PreparedStatement payFines_ps;
     private Statement getFines;
-    private float max_fine_payable;
+    private CallableStatement UpdateFinesBatchJob_cs;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -1252,10 +1266,12 @@ public class BaseJFrame extends javax.swing.JFrame {
         check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
         getFines = dbConnection.createStatement();
         payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");
+        UpdateFinesBatchJob_cs = dbConnection.prepareCall(FINES_BATCH_JOB_STRING);
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
     public static final int MAX_BOOKS_PER_BORROWER = 3;
+    private static final String FINES_BATCH_JOB_STRING = "{CALL FINES_BATCH()}";
 }
 /*
     USE ISBN10
