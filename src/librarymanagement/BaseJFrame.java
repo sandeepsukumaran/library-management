@@ -13,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,9 +23,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -41,7 +43,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         try{
             createDBConnection();
         }catch(java.sql.SQLException|ClassNotFoundException e){
-            javax.swing.JOptionPane.showMessageDialog(this,"Unable to establish database connection.","DB error",javax.swing.JOptionPane.ERROR_MESSAGE);
+            //javax.swing.JOptionPane.showMessageDialog(this,"Unable to establish database connection.","DB error",javax.swing.JOptionPane.ERROR_MESSAGE);
+            System.err.println("Unable to establish database connection.");
             System.exit(0);
         }
     }
@@ -108,11 +111,21 @@ public class BaseJFrame extends javax.swing.JFrame {
         CheckInSearchjTextField = new javax.swing.JTextField();
         CheckInSearchjTextField.setForeground(Color.GRAY);
         CheckInSearchjTextField.setFont(new Font("Tahoma",Font.ITALIC,11));
-        CheckInSearchjTextField.setText("Enter ISBN, Borrower Card No.,Book name");
+        CheckInSearchjTextField.setText("Enter ISBN, Borrower Card No.,Borrower name");
         CheckInSearchjButton = new javax.swing.JButton();
+        CheckInSearchjButton.setEnabled(false);
         CheckInjScrollPane = new javax.swing.JScrollPane();
-        CheckInjTable = new javax.swing.JTable();
+        String[] CheckInResjTableColumnNames = {"Loan ID","ISBN","Borrower Card No."};
+        CheckInResjTableData = new DefaultTableModel(CheckInResjTableColumnNames,5){
+            public boolean isCellEditable(int row,int col){
+                return false;
+            }
+        };
+        CheckInjTable = new javax.swing.JTable(CheckInResjTableData);
+        CheckInjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //Only allow one row to be selected at a time
         CheckInjButton = new javax.swing.JButton();
+        CheckInjButton.setEnabled(false);
         FinesjPanel = new javax.swing.JPanel();
         FinesjLabel = new javax.swing.JLabel();
         FinesFilterjLabel = new javax.swing.JLabel();
@@ -120,7 +133,24 @@ public class BaseJFrame extends javax.swing.JFrame {
         FinesFilterUnpaidjRadioButton = new javax.swing.JRadioButton();
         ShowFinesjButton = new javax.swing.JButton();
         FinesjScrollPane = new javax.swing.JScrollPane();
-        FinesjTable = new javax.swing.JTable();
+        String[] FinesjTableColumnNames = {"Borrower ID", "Total Fine", "Payable Fine"};
+        FinesjTableData = new DefaultTableModel(FinesjTableColumnNames,5){
+            public boolean isCellEditable(int row,int col){
+                return false;
+            }
+        };
+        FinesjTable = new javax.swing.JTable(FinesjTableData);
+        ;
+        FinesjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //Only allow one row to be selected at a time
+
+        FinesjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            //when each row is selected fill in the borrower id and number fields appropriately.
+            public void valueChanged(ListSelectionEvent e){
+                FinesBorrowerIDjTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 0));
+                FinesPayAmountjFormattedTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 2));
+            }
+        });
         FinesBorrowerIDjLabel = new javax.swing.JLabel();
         FinesBorrowerIDjTextField = new javax.swing.JTextField(6);
         FinesBorrowerIDjTextField.setEnabled(false);
@@ -135,6 +165,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(300, 300));
         setSize(new java.awt.Dimension(300, 300));
 
+        AddUserTab.setBackground(new java.awt.Color(255, 255, 255));
         AddUserTab.setMaximumSize(new java.awt.Dimension(300, 300));
 
         AddUserjPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -442,10 +473,30 @@ public class BaseJFrame extends javax.swing.JFrame {
         CheckInjLabel.setText("Books Check-In  ");
         CheckInjLabel.setOpaque(true);
 
+        CheckInSearchjTextField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                CheckInSearchjTextFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                CheckInSearchjTextFieldFocusLost(evt);
+            }
+        });
+        CheckInSearchjTextField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                CheckInSearchjTextFieldKeyReleased(evt);
+            }
+        });
+
         CheckInSearchjButton.setBackground(new java.awt.Color(255, 255, 255));
         CheckInSearchjButton.setText("SEARCH");
+        CheckInSearchjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckInSearchjButtonActionPerformed(evt);
+            }
+        });
 
         CheckInjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
+        CheckInjScrollPane.setPreferredSize(new Dimension(CheckInjTable.getSize().width , CheckInjTable.getRowHeight()*5));
 
         CheckInjTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -471,6 +522,11 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         CheckInjButton.setBackground(new java.awt.Color(255, 255, 255));
         CheckInjButton.setText("Check In");
+        CheckInjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CheckInjButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout CheckInjPanelLayout = new javax.swing.GroupLayout(CheckInjPanel);
         CheckInjPanel.setLayout(CheckInjPanelLayout);
@@ -524,6 +580,7 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         FinesFilterAlljRadioButton.setBackground(new java.awt.Color(255, 255, 255));
         FinesFilterbuttonGroup.add(FinesFilterAlljRadioButton);
+        FinesFilterAlljRadioButton.setSelected(true);
         FinesFilterAlljRadioButton.setText("ALL");
 
         FinesFilterUnpaidjRadioButton.setBackground(new java.awt.Color(255, 255, 255));
@@ -532,6 +589,13 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         ShowFinesjButton.setBackground(new java.awt.Color(255, 255, 255));
         ShowFinesjButton.setText("Show Fines");
+        ShowFinesjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ShowFinesjButtonActionPerformed(evt);
+            }
+        });
+
+        FinesjScrollPane.setPreferredSize(new Dimension(FinesjTable.getSize().width , FinesjTable.getRowHeight()*5));
 
         FinesjTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -566,6 +630,11 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         FinesPayjButton.setBackground(new java.awt.Color(255, 255, 255));
         FinesPayjButton.setText("Pay");
+        FinesPayjButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FinesPayjButtonActionPerformed(evt);
+            }
+        });
 
         FinesUpdatejButton.setBackground(new java.awt.Color(255, 255, 255));
         FinesUpdatejButton.setText("Update Fines");
@@ -904,6 +973,179 @@ public class BaseJFrame extends javax.swing.JFrame {
         }catch(SQLException e){System.err.println("SQL Exception in Search button press in checkout.");}
     }//GEN-LAST:event_BCSearchjButtonActionPerformed
 
+    private void CheckInSearchjTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_CheckInSearchjTextFieldFocusGained
+        if (CheckInSearchjTextField.getForeground()== Color.GRAY){
+            CheckInSearchjTextField.setForeground(Color.BLACK);
+            CheckInSearchjTextField.setFont(new Font("Tahoma",Font.PLAIN,11));
+            CheckInSearchjTextField.setText("");
+            CheckInSearchjButton.setEnabled(false);
+        }else{}
+    }//GEN-LAST:event_CheckInSearchjTextFieldFocusGained
+
+    private void CheckInSearchjTextFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_CheckInSearchjTextFieldFocusLost
+        if (CheckInSearchjTextField.getText().length()== 0){
+            CheckInSearchjTextField.setForeground(Color.GRAY);
+            CheckInSearchjTextField.setFont(new Font("Tahoma",Font.ITALIC,11));
+            CheckInSearchjTextField.setText("Enter ISBN, Borrower Card No.,Borrower name");
+            CheckInSearchjButton.setEnabled(false);
+        }else{}
+    }//GEN-LAST:event_CheckInSearchjTextFieldFocusLost
+
+    private void CheckInSearchjTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CheckInSearchjTextFieldKeyReleased
+        if(SearchjTextField.getText().length()==0)
+            CheckInSearchjButton.setEnabled(false);
+        else
+            CheckInSearchjButton.setEnabled(true);
+    }//GEN-LAST:event_CheckInSearchjTextFieldKeyReleased
+
+    private void CheckInSearchjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckInSearchjButtonActionPerformed
+        String search_string = CheckInSearchjTextField.getText();
+        if(search_string.length()==0)
+            return;
+        else;
+        String keyword = search_string.split("")[0];
+        ResultSet rs = null;
+        try{
+            if(keyword.matches("\\d{10}")){
+                //ISBN entered
+                check_in_ISBN_ps.clearParameters();
+                check_in_ISBN_ps.setString(1,keyword);
+                rs = check_in_ISBN_ps.executeQuery();
+            }else if(keyword.matches("\\d+")){
+                //Borrower card no entered
+                check_in_Card_Id_ps.clearParameters();
+                check_in_Card_Id_ps.setString(1,keyword);
+                rs = check_in_Card_Id_ps.executeQuery();
+            }else if(keyword.matches("\\[a-zA-z]+")){
+                //name of borrower entered
+                check_in_Name_ps.clearParameters();
+                check_in_Name_ps.setString(1,"%"+keyword+"%");
+                rs = check_in_Name_ps.executeQuery();
+            }else{
+                JOptionPane.showMessageDialog(this, "Search by ISBN, Borrower Card No., Borrower name only.", "Invalid Search String", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            if(rs==null){
+               JOptionPane.showMessageDialog(this, "No results found.", "Success", JOptionPane.INFORMATION_MESSAGE);
+               return;
+            }else;
+            
+            //put data in table
+            CheckInResjTableData.setRowCount(0);
+            while(rs.next()){
+                Vector<String> row = new Vector<>();
+                row.add(rs.getString(1));
+                row.add(rs.getString(2));
+                row.add(rs.getString(3));
+                CheckInResjTableData.addRow(row);
+            }
+            //Hopefully this should bring about an update to the GUI table. If not, add code to do that explicitly below
+            //CheckInjTable.setModel(BCResjTableData);
+            System.out.println("Check In result table populated.");
+        }catch(SQLException sqle){
+            System.err.println("SQL Exception in Check-In Search button press.");
+        }
+    }//GEN-LAST:event_CheckInSearchjButtonActionPerformed
+
+    private void CheckInjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CheckInjButtonActionPerformed
+        int CheckInSelectedRowIndex = CheckInjTable.getSelectedRow();
+        if(CheckInSelectedRowIndex == -1)
+            return;
+        else;
+        
+        String selected_Loan_ID = (String)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0);
+        try {
+            check_in_update_ps.clearParameters();
+            check_in_update_ps.setString(1,selected_Loan_ID);
+            check_in_update_ps.executeUpdate();
+            CheckInResjTableData.removeRow(CheckInSelectedRowIndex);
+            JOptionPane.showMessageDialog(this, "Book checked in.", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (SQLException ex) {
+            System.err.println("SQL Exception in Check in button actionPerformed.");
+        }
+    }//GEN-LAST:event_CheckInjButtonActionPerformed
+
+    private void ShowFinesjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowFinesjButtonActionPerformed
+        /*
+            Select all fines for every person and populate first two column of table.
+            Select all payable fines for every person and update last column of table.       
+        */
+        ResultSet rs = null;
+        HashMap totalFines = new HashMap();
+        try{
+            if(FinesFilterAlljRadioButton.isSelected())
+                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID");
+            else
+                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID");
+            
+            
+            if(rs==null){
+                JOptionPane.showMessageDialog(this, "No Fines in database.", "No Fines", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }else;
+            
+            while(rs.next()){
+                totalFines.put(rs.getString(1),rs.getString(2));
+            }
+            
+            //get payable fine amount
+            rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID");
+            
+            //populate table
+            FinesjTableData.setRowCount(0);
+            String card_id, amt;
+            Vector<String> row = new Vector<>();
+            while(rs.next()){
+                row.clear();
+                card_id = rs.getString(1);
+                amt = rs.getString(2);
+                row.add(card_id); //borrower card no.
+                row.add((String)totalFines.get(card_id)); //total fine amount
+                row.add(amt); //payable fine amount
+                FinesjTableData.addRow(row);
+                totalFines.remove(card_id); //delete the card_id from fines map
+            }
+            
+            //fill in rest - those with no payable fines (probably still holding on to books) with 0.00
+            for(Object key : totalFines.keySet()){
+                row.clear();
+                row.add((String)key);
+                row.add((String)totalFines.get(key));
+                row.add("0.00");
+                FinesjTableData.addRow(row);
+            }
+        }catch(SQLException e){
+            System.err.println("Error in Show Fines Button ActionPerformed.");
+        }
+    }//GEN-LAST:event_ShowFinesjButtonActionPerformed
+
+    private void FinesPayjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FinesPayjButtonActionPerformed
+        String card_id = FinesBorrowerIDjTextField.getText();
+        String amt = FinesPayAmountjFormattedTextField.getText();
+        if(card_id.length()==0 || amt.equals("0.00"))
+            return;
+        else;
+        
+        try{
+            payFines_ps.clearParameters();
+            payFines_ps.setString(1,card_id);
+            payFines_ps.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Fine Payment recorded successfully.", "Payment Complete", JOptionPane.INFORMATION_MESSAGE);
+            
+            //update current data shown in table
+            FinesjTableData.setValueAt("0.00", FinesjTable.getSelectedRow(), 2);
+            if(FinesFilterUnpaidjRadioButton.isSelected()){
+                Float tot = Float.parseFloat((String)FinesjTableData.getValueAt(FinesjTable.getSelectedRow(), 1));
+                Float amount = Float.parseFloat((String)FinesjTableData.getValueAt(FinesjTable.getSelectedRow(), 2));
+                FinesjTableData.setValueAt(String.format(java.util.Locale.US,"%.2f", tot-amount), FinesjTable.getSelectedRow(), 1);
+            }else;
+        }catch(SQLException|NumberFormatException e){
+            System.err.println("SQL or NumberFormatException Exception in Fines pay button ActionPerformed.");
+        }
+    }//GEN-LAST:event_FinesPayjButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -986,6 +1228,8 @@ public class BaseJFrame extends javax.swing.JFrame {
     private java.sql.Connection dbConnection = null;
     //private TableModel BCResjTableData;
     private DefaultTableModel BCResjTableData;
+    private DefaultTableModel CheckInResjTableData;
+    private DefaultTableModel FinesjTableData;
     private PreparedStatement borrower_possession_ps;
     private PreparedStatement book_checkout_ps;
     private PreparedStatement single_key_10_digits_ps;
@@ -993,6 +1237,12 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement single_key_alpha_ps;
     private PreparedStatement single_key_alnum_ps;
     private PreparedStatement multi_key_ps;
+    private PreparedStatement check_in_ISBN_ps;
+    private PreparedStatement check_in_Card_Id_ps;
+    private PreparedStatement check_in_Name_ps;
+    private PreparedStatement check_in_update_ps;
+    private PreparedStatement payFines_ps;
+    private Statement getFines;
     private float max_fine_payable;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
@@ -1011,6 +1261,12 @@ public class BaseJFrame extends javax.swing.JFrame {
         single_key_multi_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
         single_key_alpha_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? OR NAME LIKE ?");
         single_key_alnum_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
+        check_in_ISBN_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND ISBN = ?");
+        check_in_Card_Id_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND CARD_ID = ?");
+        check_in_Name_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, BL.CARD_ID FROM BOOK_LOANS BL WHERE DATE_IN IS NULL AND CARD_ID IN (SELECT B.CARD_ID FROM BORROWER B WHERE B.BNAME LIKE ?)");
+        check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
+        getFines = dbConnection.createStatement();
+        payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
@@ -1037,4 +1293,6 @@ public class BaseJFrame extends javax.swing.JFrame {
     -   PARSE THE TABLE AND REPLACE NULLS WITH 0.0
     -   FINES MUST BE PAID IN FULL
     -WHEN ROW IN TABLE IS SELECTED, UPDATED THE BORROWER ID FIELD AND MAX FINE PAYABLE FIELD(HIDDEN)
+
+    -BOOK_LOANS_LITE VIEW OF LOAN_ID, CARD_ID, DATE_IN
 */
