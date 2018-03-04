@@ -98,9 +98,30 @@ public class BaseJFrame extends javax.swing.JFrame {
         BCSearchjButton = new javax.swing.JButton();
         BCSearchjButton.setEnabled(false);
         BCResjScrollPane = new javax.swing.JScrollPane();
-        BCResjTable = new javax.swing.JTable();
+        String[] BCResjTableColumnNames = {"ISBN", "Title", "Author(s)", "Availability"};
+        BCResjTableData = new DefaultTableModel(BCResjTableColumnNames,5){
+            public boolean isCellEditable(int row,int column){
+                return false;
+            }
+        };
+        BCResjTable = new javax.swing.JTable(BCResjTableData);
         BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //Only allow one row to be selected at a time
+
+        //Colour availability Column based on data
+        BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
+                Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (column != 3)
+                return c;
+                else if(((String)value).equals("IN"))
+                c.setBackground(Color.GREEN);
+                else
+                c.setBackground(Color.RED);
+                return c;
+            }
+        });
         BCBorrowerCardjLabel = new javax.swing.JLabel();
         BCBorrowerCardjTextField = new javax.swing.JTextField(6)
         ;
@@ -354,42 +375,6 @@ public class BaseJFrame extends javax.swing.JFrame {
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
-            }
-        });
-        BCResjTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "ISBN", "Title", "Author(s)", "Availability"
-            }
-        ) {
-            /*boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };*/
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                //return canEdit [columnIndex];
-                return false;
-            }
-        });
-
-        //Colour availability Column based on data
-        BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
-                Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (column != 3)
-                return c;
-                else if(((String)value).equals("IN"))
-                c.setBackground(Color.GREEN);
-                else
-                c.setBackground(Color.RED);
-                return c;
             }
         });
         BCResjScrollPane.setViewportView(BCResjTable);
