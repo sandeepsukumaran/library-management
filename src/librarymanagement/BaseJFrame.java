@@ -105,7 +105,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 return false;
             }
         };
-        BCResjTable = new javax.swing.JTable(BCResjTableData);
+        BCResjTable = new javax.swing.JTable();
         BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //Only allow one row to be selected at a time
 
@@ -114,7 +114,8 @@ public class BaseJFrame extends javax.swing.JFrame {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
                 Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                if (column != 3)
+                c.setBackground(Color.WHITE);
+                if ((column != 3)||(value==null))
                 return c;
                 else if(((String)value).equals("IN"))
                 c.setBackground(Color.GREEN);
@@ -143,7 +144,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 return false;
             }
         };
-        CheckInjTable = new javax.swing.JTable(CheckInResjTableData);
+        CheckInjTable = new javax.swing.JTable();
         CheckInjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //Only allow one row to be selected at a time
         CheckInjButton = new javax.swing.JButton();
@@ -161,8 +162,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 return false;
             }
         };
-        FinesjTable = new javax.swing.JTable(FinesjTableData);
-        ;
+        FinesjTable = new javax.swing.JTable();
         FinesjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //Only allow one row to be selected at a time
 
@@ -358,29 +358,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         BCResjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
         BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
 
-        BCResjTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "ISBN", "Title", "Author(s)", "Availability"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        BCResjTable.setModel(BCResjTableData);
         BCResjScrollPane.setViewportView(BCResjTable);
-
-        BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));
 
         BCBorrowerCardjLabel.setBackground(new java.awt.Color(255, 255, 255));
         BCBorrowerCardjLabel.setText("Borrower Card No.");
@@ -413,19 +392,19 @@ public class BaseJFrame extends javax.swing.JFrame {
             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BCResjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                         .addComponent(SearchjTextField)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(BCSearchjButton))
                     .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                         .addGroup(BookCheckoutjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(BCResjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(BookCheckoutjPanelLayout.createSequentialGroup()
                                 .addComponent(BCBorrowerCardjLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(BCBorrowerCardjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(BCCheckoutjButton))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 225, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         BookCheckoutjPanelLayout.setVerticalGroup(
@@ -484,26 +463,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         CheckInjScrollPane.setBackground(new java.awt.Color(255, 255, 255));
         CheckInjScrollPane.setPreferredSize(new Dimension(CheckInjTable.getSize().width , CheckInjTable.getRowHeight()*5));
 
-        CheckInjTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Loan ID", "ISBN", "Borrower Card No."
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        CheckInjTable.setModel(CheckInResjTableData);
         CheckInjScrollPane.setViewportView(CheckInjTable);
 
         CheckInjButton.setBackground(new java.awt.Color(255, 255, 255));
@@ -583,26 +543,7 @@ public class BaseJFrame extends javax.swing.JFrame {
 
         FinesjScrollPane.setPreferredSize(new Dimension(FinesjTable.getSize().width , FinesjTable.getRowHeight()*5));
 
-        FinesjTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Borrower ID", "Total Fine", "Payable Fine"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        FinesjTable.setModel(FinesjTableData);
         FinesjScrollPane.setViewportView(FinesjTable);
 
         FinesBorrowerIDjLabel.setBackground(new java.awt.Color(255, 255, 255));
@@ -867,9 +808,12 @@ public class BaseJFrame extends javax.swing.JFrame {
         HashMap ISBNset = new HashMap();
         Vector<Vector<String/*Object*/>> rsData = new Vector<>();
         Vector<String> columnNames = new Vector<>();
+        columnNames.add("ISBN");
+        columnNames.add("Title");
+        columnNames.add("Author(s)");
+        columnNames.add("Availability");
         //ArrayList<ArrayList<String/*Object*/>> processed_rsData = new ArrayList<>(); //Contains authors in one row
         try{
-            columnNames.clear();
             rsData.clear();
             //Only one keyword case
             if(keywords.length == 1){
@@ -879,23 +823,24 @@ public class BaseJFrame extends javax.swing.JFrame {
                     //statement_string = "SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?";
                     single_key_10_digits_ps.clearParameters();
                     single_key_10_digits_ps.setString(1, keyword);
-                    single_key_10_digits_ps.setString(2, "\'%"+keyword+"%\'");
+                    single_key_10_digits_ps.setString(2, "%"+keyword+"%");
                     rs = single_key_10_digits_ps.executeQuery();
                 }else if(keyword.matches("\\d+")){
                     //title entered
                     single_key_multi_digits_ps.clearParameters();
-                    single_key_multi_digits_ps.setString(1, "\'%"+keyword+"%\'");
+                    single_key_multi_digits_ps.setString(1, "%"+keyword+"%");
                     rs = single_key_multi_digits_ps.executeQuery();
                 }else if(keyword.matches("[a-zA-Z]+")){
                     //title or author entered
                     single_key_alpha_ps.clearParameters();
-                    single_key_alpha_ps.setString(1, "\'%"+keyword+"%\'");
-                    single_key_alpha_ps.setString(2, "\'%"+keyword+"%\'");
+                    single_key_alpha_ps.setString(1, "%"+keyword+"%");
+                    single_key_alpha_ps.setString(2, "%"+keyword+"%");
+                    System.out.println(single_key_alpha_ps.toString());
                     rs = single_key_alpha_ps.executeQuery();
                 }else if(keyword.matches("\\w+")){
                     //title entered
                     single_key_alnum_ps.clearParameters();
-                    single_key_alnum_ps.setString(1, "\'%"+keyword+"%\'");
+                    single_key_alnum_ps.setString(1, "%"+keyword+"%");
                     rs = single_key_alnum_ps.executeQuery();
                 }else;
             }else{
@@ -904,20 +849,21 @@ public class BaseJFrame extends javax.swing.JFrame {
                     if(keyword.matches("\\d{13}")){
                         statement_string += " ISBN = ? OR TITLE LIKE ?";
                         parameters.add(keyword);
-                        parameters.add("\'%"+keyword+"%\'");
+                        parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("\\d+")){
                         statement_string += " TITLE LIKE ?";
-                        parameters.add("\'%"+keyword+"%\'");
+                        parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("[a-zA-Z]+")){
                         statement_string += " TITLE LIKE ? OR NAME LIKE ?";
-                        parameters.add("\'%"+keyword+"%\'");
-                        parameters.add("\'%"+keyword+"%\'");
+                        parameters.add("%"+keyword+"%");
+                        parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("\\w+")){
                         statement_string += " TITLE LIKE ?";
-                        parameters.add("\'%"+keyword+"%\'");
+                        parameters.add("%"+keyword+"%");
                     }else;
                 }
                 
+                statement_string += " LIMIT 100";
                 multi_key_ps = dbConnection.prepareStatement(statement_string);
                 for(int i=0;i<parameters.size();++i)
                     multi_key_ps.setString(i, parameters.get(i));
@@ -926,10 +872,11 @@ public class BaseJFrame extends javax.swing.JFrame {
             }
             
             //Operate on rs
-            if(rs==null){
+            if((rs == null ) || !rs.isBeforeFirst()){
                 JOptionPane.showMessageDialog(this, "No results found.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 return;
-            }else;
+            }else
+                System.out.println("Results obtained.");
             ResultSetMetaData rsmeta = rs.getMetaData();
             int columnCount = rsmeta.getColumnCount();
             while(rs.next()){
@@ -941,13 +888,17 @@ public class BaseJFrame extends javax.swing.JFrame {
                     ISBNset.put(rs.getString(1), rs.getString(3));
                 
                 Vector<String> row = new Vector<>();
-                for(int i=1;i<=columnCount;++i){
+                for(int i=1;i<columnCount;++i){
                     row.add(rs.getString(i));
-                    columnNames.add(rsmeta.getColumnName(i));
+                    //columnNames.add(rsmeta.getColumnName(i));
                 }
+                if(rs.getString(columnCount).equals("1"))
+                    row.add("IN");
+                else
+                    row.add("OUT");
                 rsData.add(row);    
             }
-            
+            //System.out.println(rsData);
             //Update list of authors
             Vector<String>row;
             for(int i=0;i<rsData.size();++i){
@@ -1007,7 +958,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 check_in_Card_Id_ps.clearParameters();
                 check_in_Card_Id_ps.setString(1,keyword);
                 rs = check_in_Card_Id_ps.executeQuery();
-            }else if(keyword.matches("\\[a-zA-z]+")){
+            }else if(keyword.matches("[a-zA-z]+")){
                 //name of borrower entered
                 check_in_Name_ps.clearParameters();
                 check_in_Name_ps.setString(1,"\'%"+keyword+"\'%");
@@ -1017,7 +968,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 return;
             }
             
-            if(rs==null){
+            if((rs==null)|| !rs.isBeforeFirst()){
                JOptionPane.showMessageDialog(this, "No results found.", "Success", JOptionPane.INFORMATION_MESSAGE);
                return;
             }else;
@@ -1066,22 +1017,25 @@ public class BaseJFrame extends javax.swing.JFrame {
         HashMap totalFines = new HashMap();
         try{
             if(FinesFilterAlljRadioButton.isSelected())
-                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID");
+                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID LIMIT 100");
             else
-                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID");
+                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID LIMIT 100");
             
             
-            if(rs==null){
+            if(!rs.isBeforeFirst()){
+                System.out.println("No Fines in DB.");
                 JOptionPane.showMessageDialog(this, "No Fines in database.", "No Fines", JOptionPane.INFORMATION_MESSAGE);
                 return;
-            }else;
+            }else
+                System.out.println("Fines selected.");
             
             while(rs.next()){
                 totalFines.put(rs.getString(1),rs.getString(2));
+                System.out.println(":"+rs.getString(1));
             }
             
             //get payable fine amount
-            rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID");
+            rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID LIMIT 100");
             
             //populate table
             FinesjTableData.setRowCount(0);
@@ -1254,15 +1208,15 @@ public class BaseJFrame extends javax.swing.JFrame {
         //System.out.println(reader.getString("db.password"));
         dbConnection = java.sql.DriverManager.getConnection(reader.getString("db.url"),reader.getString("db.username"),reader.getString("db.password"));
         //dbConnection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/LIBRARY","librarian","booklover");
-        borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
+        borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ? LIMIT 100");
         book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
-        single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?");
-        single_key_multi_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
-        single_key_alpha_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? OR NAME LIKE ?");
-        single_key_alnum_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ?");
-        check_in_ISBN_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND ISBN = ?");
-        check_in_Card_Id_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND CARD_ID = ?");
-        check_in_Name_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, BL.CARD_ID FROM BOOK_LOANS BL WHERE DATE_IN IS NULL AND CARD_ID IN (SELECT B.CARD_ID FROM BORROWER B WHERE B.BNAME LIKE ?)");
+        single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ? LIMIT 100");
+        single_key_multi_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? LIMIT 100");
+        single_key_alpha_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? OR NAME LIKE ? LIMIT 100");
+        single_key_alnum_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? LIMIT 100");
+        check_in_ISBN_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND ISBN = ? LIMIT 100");
+        check_in_Card_Id_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND CARD_ID = ? LIMIT 100");
+        check_in_Name_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, BL.CARD_ID FROM BOOK_LOANS BL WHERE DATE_IN IS NULL AND CARD_ID IN (SELECT B.CARD_ID FROM BORROWER B WHERE B.BNAME LIKE ?) LIMIT 100");
         check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
         getFines = dbConnection.createStatement();
         payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");

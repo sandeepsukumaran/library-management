@@ -359,9 +359,10 @@
                       <Component id="BooksCheckoutjLabel" min="-2" pref="170" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="BCResjScrollPane" pref="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="SearchjTextField" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -369,7 +370,6 @@
                           </Group>
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="BCResjScrollPane" alignment="0" min="-2" pref="328" max="-2" attributes="0"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="BCBorrowerCardjLabel" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -377,7 +377,7 @@
                                   </Group>
                                   <Component id="BCCheckoutjButton" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <EmptySpace min="0" pref="225" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -455,7 +455,6 @@
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));&#xd;&#xa;"/>
-                <AuxValue name="JavaCodeGenerator_LayoutCodePost" type="java.lang.String" value="BCResjScrollPane.setPreferredSize(new Dimension(BCResjTable.getSize().width , BCResjTable.getRowHeight()*5));&#xd;&#xa;"/>
                 <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
               </AuxValues>
 
@@ -463,19 +462,13 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="BCResjTable">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="5">
-                        <Column editable="false" title="ISBN" type="java.lang.Object"/>
-                        <Column editable="false" title="Title" type="java.lang.Object"/>
-                        <Column editable="false" title="Author(s)" type="java.lang.Object"/>
-                        <Column editable="false" title="Availability" type="java.lang.Object"/>
-                      </Table>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="BCResjTableData" type="code"/>
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(BCResjTableData);"/>
-                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time&#xd;&#xa;&#xd;&#xa;//Colour availability Column based on data&#xd;&#xa;BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){&#xd;&#xa;    @Override&#xd;&#xa;    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){&#xd;&#xa;        Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);&#xd;&#xa;        if (column != 3)&#xd;&#xa;            return c;&#xd;&#xa;        else if(((String)value).equals(&quot;IN&quot;))&#xd;&#xa;            c.setBackground(Color.GREEN);&#xd;&#xa;        else&#xd;&#xa;            c.setBackground(Color.RED);&#xd;&#xa;        return c;&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
-                    <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="String[] BCResjTableColumnNames = {&quot;ISBN&quot;, &quot;Title&quot;, &quot;Author(s)&quot;, &quot;Availability&quot;};&#xd;&#xa;BCResjTableData = new DefaultTableModel(BCResjTableColumnNames,5){&#xd;&#xa;    public boolean isCellEditable(int row,int column){&#xd;&#xa;        return false;&#xd;&#xa;    }&#xd;&#xa;};"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="BCResjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time&#xd;&#xa;&#xd;&#xa;//Colour availability Column based on data&#xd;&#xa;BCResjTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){&#xd;&#xa;    @Override&#xd;&#xa;    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){&#xd;&#xa;        Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);&#xd;&#xa;        c.setBackground(Color.WHITE);&#xd;&#xa;        if ((column != 3)||(value==null))&#xd;&#xa;            return c;&#xd;&#xa;        else if(((String)value).equals(&quot;IN&quot;))&#xd;&#xa;            c.setBackground(Color.GREEN);&#xd;&#xa;        else&#xd;&#xa;            c.setBackground(Color.RED);&#xd;&#xa;        return c;&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="String[] BCResjTableColumnNames = {&quot;ISBN&quot;, &quot;Title&quot;, &quot;Author(s)&quot;, &quot;Availability&quot;};&#xd;&#xa;BCResjTableData = new DefaultTableModel(BCResjTableColumnNames,5){&#xd;&#xa;    public boolean isCellEditable(int row,int column){&#xd;&#xa;        return false;&#xd;&#xa;    }&#xd;&#xa;};&#xd;&#xa;"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
@@ -629,16 +622,11 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="CheckInjTable">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="3" rowCount="5">
-                        <Column editable="false" title="Loan ID" type="java.lang.Object"/>
-                        <Column editable="false" title="ISBN" type="java.lang.Object"/>
-                        <Column editable="false" title="Borrower Card No." type="java.lang.Object"/>
-                      </Table>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="CheckInResjTableData" type="code"/>
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(CheckInResjTableData);"/>
                     <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="CheckInjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time"/>
                     <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="String[] CheckInResjTableColumnNames = {&quot;Loan ID&quot;,&quot;ISBN&quot;,&quot;Borrower Card No.&quot;};&#xd;&#xa;CheckInResjTableData = new DefaultTableModel(CheckInResjTableColumnNames,5){&#xd;&#xa;    public boolean isCellEditable(int row,int col){&#xd;&#xa;        return false;&#xd;&#xa;    }&#xd;&#xa;};"/>
                   </AuxValues>
@@ -815,16 +803,11 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="FinesjTable">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="3" rowCount="5">
-                        <Column editable="false" title="Borrower ID" type="java.lang.Object"/>
-                        <Column editable="false" title="Total Fine" type="java.lang.Object"/>
-                        <Column editable="false" title="Payable Fine" type="java.lang.Object"/>
-                      </Table>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                      <Connection code="FinesjTableData" type="code"/>
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(FinesjTableData);&#xd;&#xa;"/>
                     <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="FinesjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time&#xd;&#xa;&#xd;&#xa;FinesjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){&#xd;&#xa;    //when each row is selected fill in the borrower id and number fields appropriately.&#xd;&#xa;    public void valueChanged(ListSelectionEvent e){&#xd;&#xa;        FinesBorrowerIDjTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 0));&#xd;&#xa;        FinesPayAmountjFormattedTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 2));&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
                     <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="String[] FinesjTableColumnNames = {&quot;Borrower ID&quot;, &quot;Total Fine&quot;, &quot;Payable Fine&quot;};&#xd;&#xa;FinesjTableData = new DefaultTableModel(FinesjTableColumnNames,5){&#xd;&#xa;    public boolean isCellEditable(int row,int col){&#xd;&#xa;        return false;&#xd;&#xa;    }&#xd;&#xa;};"/>
                   </AuxValues>
