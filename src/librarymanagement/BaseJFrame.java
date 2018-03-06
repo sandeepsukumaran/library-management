@@ -874,47 +874,47 @@ public class BaseJFrame extends javax.swing.JFrame {
             //Only one keyword case
             if(keywords.length == 1){
                 String keyword = keywords[0];
-                if(keyword.matches("\\d{10}")){
+                if(keyword.matches("\\d{13}")){
                     //ISBN or title entered
                     //statement_string = "SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ?";
                     single_key_10_digits_ps.clearParameters();
                     single_key_10_digits_ps.setString(1, keyword);
-                    single_key_10_digits_ps.setString(2, "%"+keyword+"%");
+                    single_key_10_digits_ps.setString(2, "\'%"+keyword+"%\'");
                     rs = single_key_10_digits_ps.executeQuery();
                 }else if(keyword.matches("\\d+")){
                     //title entered
                     single_key_multi_digits_ps.clearParameters();
-                    single_key_multi_digits_ps.setString(1, "%"+keyword+"%");
+                    single_key_multi_digits_ps.setString(1, "\'%"+keyword+"%\'");
                     rs = single_key_multi_digits_ps.executeQuery();
                 }else if(keyword.matches("[a-zA-Z]+")){
                     //title or author entered
                     single_key_alpha_ps.clearParameters();
-                    single_key_alpha_ps.setString(1, "%"+keyword+"%");
-                    single_key_alpha_ps.setString(2, "%"+keyword+"%");
+                    single_key_alpha_ps.setString(1, "\'%"+keyword+"%\'");
+                    single_key_alpha_ps.setString(2, "\'%"+keyword+"%\'");
                     rs = single_key_alpha_ps.executeQuery();
                 }else if(keyword.matches("\\w+")){
                     //title entered
                     single_key_alnum_ps.clearParameters();
-                    single_key_alnum_ps.setString(1, "%"+keyword+"%");
+                    single_key_alnum_ps.setString(1, "\'%"+keyword+"%\'");
                     rs = single_key_alnum_ps.executeQuery();
                 }else;
             }else{
             //Multiple keywords case
                 for(String keyword:keywords){
-                    if(keyword.matches("\\d{10}")){
+                    if(keyword.matches("\\d{13}")){
                         statement_string += " ISBN = ? OR TITLE LIKE ?";
                         parameters.add(keyword);
-                        parameters.add("%"+keyword+"%");
+                        parameters.add("\'%"+keyword+"%\'");
                     }else if(keyword.matches("\\d+")){
                         statement_string += " TITLE LIKE ?";
-                        parameters.add("%"+keyword+"%");
+                        parameters.add("\'%"+keyword+"%\'");
                     }else if(keyword.matches("[a-zA-Z]+")){
                         statement_string += " TITLE LIKE ? OR NAME LIKE ?";
-                        parameters.add("%"+keyword+"%");
-                        parameters.add("%"+keyword+"%");
+                        parameters.add("\'%"+keyword+"%\'");
+                        parameters.add("\'%"+keyword+"%\'");
                     }else if(keyword.matches("\\w+")){
                         statement_string += " TITLE LIKE ?";
-                        parameters.add("%"+keyword+"%");
+                        parameters.add("\'%"+keyword+"%\'");
                     }else;
                 }
                 
@@ -997,7 +997,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         String keyword = search_string.split("")[0];
         ResultSet rs = null;
         try{
-            if(keyword.matches("\\d{10}")){
+            if(keyword.matches("\\d{13}")){
                 //ISBN entered
                 check_in_ISBN_ps.clearParameters();
                 check_in_ISBN_ps.setString(1,keyword);
@@ -1010,7 +1010,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             }else if(keyword.matches("\\[a-zA-z]+")){
                 //name of borrower entered
                 check_in_Name_ps.clearParameters();
-                check_in_Name_ps.setString(1,"%"+keyword+"%");
+                check_in_Name_ps.setString(1,"\'%"+keyword+"\'%");
                 rs = check_in_Name_ps.executeQuery();
             }else{
                 JOptionPane.showMessageDialog(this, "Search by ISBN, Borrower Card No., Borrower name only.", "Invalid Search String", JOptionPane.ERROR_MESSAGE);
@@ -1045,10 +1045,10 @@ public class BaseJFrame extends javax.swing.JFrame {
             return;
         else;
         
-        String selected_Loan_ID = (String)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0);
+        int selected_Loan_ID = (int)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0);
         try {
             check_in_update_ps.clearParameters();
-            check_in_update_ps.setString(1,selected_Loan_ID);
+            check_in_update_ps.setInt(1,selected_Loan_ID);
             check_in_update_ps.executeUpdate();
             CheckInResjTableData.removeRow(CheckInSelectedRowIndex);
             JOptionPane.showMessageDialog(this, "Book checked in.", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -1274,16 +1274,16 @@ public class BaseJFrame extends javax.swing.JFrame {
     private static final String FINES_BATCH_JOB_STRING = "{CALL FINES_BATCH()}";
 }
 /*
-    USE ISBN10
+    USE ISBN10 << CHANGE TO ISBN13
     BOOK_LOANS: DATE_IN DEFAULT NULL
     BORROWER AUGMENTED WITH INTEGER FIELD POSSESSION
     BOOK AUGMENTED WITH AVAILABILITY BOOLEAN TYPE
     
     IN SEARCH FIELD:
-    -ASSUME ISBN10 MUST BE FULLY ENTERED
+    -ASSUME ISBN13 MUST BE FULLY ENTERED
     -SPLIT ENTERED WORDS ON SPACE
     -IF WORD IS 10 DIGITS CANDIDATE FOR ISBN10 AND TITLE
-    -IF WORD IS DIGITS(NOT 10 LONG) CANDIDATE FOR TITLE SUBSTRING
+    -IF WORD IS DIGITS(NOT 13 LONG) CANDIDATE FOR TITLE SUBSTRING
     -IF WORD IS ALNUM CANDIDATE FOR TITLE
     -IF WORD IS ALPHA CANDIDATE FOR TITLE, AUTHOR
 
