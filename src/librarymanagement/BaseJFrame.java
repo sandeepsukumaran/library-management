@@ -66,7 +66,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         NamejLabel = new javax.swing.JLabel();
         FirstNamejTextField = new javax.swing.JTextField("",20);
         LastNamejTextField = new javax.swing.JTextField("",20);
-        NamejLabel1 = new javax.swing.JLabel();
+        SSNjLabel = new javax.swing.JLabel();
         PhonejLabel = new javax.swing.JLabel();
         MaskFormatter phoneFormatter = null;
         try{
@@ -114,13 +114,13 @@ public class BaseJFrame extends javax.swing.JFrame {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column){
                 Component c =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                c.setBackground(Color.WHITE);
+                c.setForeground(Color.BLACK);
                 if ((column != 3)||(value==null))
                 return c;
                 else if(((String)value).equals("IN"))
-                c.setBackground(Color.GREEN);
+                c.setForeground(Color.GREEN);
                 else
-                c.setBackground(Color.RED);
+                c.setForeground(Color.RED);
                 return c;
             }
         });
@@ -147,6 +147,13 @@ public class BaseJFrame extends javax.swing.JFrame {
         CheckInjTable = new javax.swing.JTable();
         CheckInjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         //Only allow one row to be selected at a time
+
+        CheckInjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+            //when each row is selected fill in the borrower id and number fields appropriately.
+            public void valueChanged(ListSelectionEvent e){
+                CheckInjButton.setEnabled(true);
+            }
+        });
         CheckInjButton = new javax.swing.JButton();
         CheckInjButton.setEnabled(false);
         FinesjPanel = new javax.swing.JPanel();
@@ -216,7 +223,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             }
         });
 
-        NamejLabel1.setText("SSN");
+        SSNjLabel.setText("SSN");
 
         PhonejLabel.setText("PHONE");
 
@@ -270,7 +277,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(NamejLabel)
                     .addComponent(PhonejLabel)
-                    .addComponent(NamejLabel1)
+                    .addComponent(SSNjLabel)
                     .addComponent(AddressjLabel))
                 .addGap(18, 18, 18)
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -301,7 +308,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                     .addComponent(LastNamejTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(24, 24, 24)
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(NamejLabel1)
+                    .addComponent(SSNjLabel)
                     .addComponent(SSNjFormattedTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(AddUserjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -673,24 +680,34 @@ public class BaseJFrame extends javax.swing.JFrame {
         //Insert values into db
         try{
             RegisterUserjButton.setEnabled(false);
-            String insertUserString = "INSERT INTO BORROWER (SSN , BNAME , ADDRESS , PHONE) VALUES (?,?,?,?)";
-            PreparedStatement insertUser = dbConnection.prepareStatement(insertUserString);
-            insertUser.setString(0, SSNjFormattedTextField.getText());
-            insertUser.setString(1, NamejLabel.getText()+" "+NamejLabel1.getText());
+            ResultSet rs = getMaxCard_Id.executeQuery();
+            int new_card_number = 0;
+            if(!rs.isBeforeFirst())
+                new_card_number = 1;
+            else{
+                rs.next();
+                new_card_number = rs.getInt(1)+1;
+            }
+            insertUser.setString(1, String.format("%06d",new_card_number));
+            insertUser.setString(2, SSNjFormattedTextField.getText());
+            insertUser.setString(3, FirstNamejTextField.getText()+" "+LastNamejTextField.getText());
             if(AddressL2jTextField.getText().length()>0)
-                insertUser.setString(2, AddressL1jTextField.getText()+","+AddressL2jTextField.getText()+","+CityjTextField.getText()+","+StatejComboBox.getSelectedItem().toString());
+                insertUser.setString(4, AddressL1jTextField.getText()+","+AddressL2jTextField.getText()+","+CityjTextField.getText()+","+StatejComboBox.getSelectedItem().toString());
             else
-                insertUser.setString(2, AddressL1jTextField.getText()+","+CityjTextField.getText()+","+StatejComboBox.getSelectedItem().toString());
-            insertUser.setString(3, PhonejFormattedTextField.getText());
+                insertUser.setString(4, AddressL1jTextField.getText()+","+CityjTextField.getText()+","+StatejComboBox.getSelectedItem().toString());
+            insertUser.setString(5, PhonejFormattedTextField.getText());
             
             insertUser.executeUpdate();
             
             JOptionPane.showMessageDialog(this, "Borrower successfully added to system.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            FirstNamejTextField.setText(""); LastNamejTextField.setText("");SSNjFormattedTextField.setText("");
+            PhonejFormattedTextField.setText("");AddressL1jTextField.setText("");AddressL2jTextField.setText(""); CityjTextField.setText("");
             RegisterUserjButton.setEnabled(true);
         }catch(SQLException e){
             System.err.println("Inserting user into db failed!   ");
             if (e.getErrorCode()==MYSQL_DUPLICATE_PK_ERROR_CODE){
                 JOptionPane.showMessageDialog(this, "Borrower with this SSN exists.", "Duplicate SSN Error", JOptionPane.ERROR_MESSAGE);
+                SSNjFormattedTextField.setText("");
             }else{}
         }
     }//GEN-LAST:event_RegisterUserjButtonActionPerformed
@@ -751,6 +768,10 @@ public class BaseJFrame extends javax.swing.JFrame {
     private void BCCheckoutjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCCheckoutjButtonActionPerformed
         //validate all necessary conditions
         String borrower_card_number = BCBorrowerCardjTextField.getText();
+        if(borrower_card_number.length()==0)
+            return;
+        else;
+        borrower_card_number = String.format("%06d",Integer.parseInt(borrower_card_number));
         int selected_row_index = BCResjTable.getSelectedRow();
         if(!borrower_card_number.matches("\\d+(\\d+)?")){
             JOptionPane.showMessageDialog(this, "Please enter a valid Borrower card number.", "Invalid Borrower Card Number", JOptionPane.ERROR_MESSAGE);
@@ -772,8 +793,14 @@ public class BaseJFrame extends javax.swing.JFrame {
             borrower_possession_ps.clearParameters();
             borrower_possession_ps.setString(1,borrower_card_number);
             ResultSet rs = borrower_possession_ps.executeQuery();
-            //rs will contain exactly one row and one column
-            rs.next();
+            //rs will contain exactly one row and one column OR BORROWER DOESN'T EXIST
+            if(!rs.isBeforeFirst()){
+                JOptionPane.showMessageDialog(this, "Borrower doesn't exist.", "Invalid Card number", JOptionPane.ERROR_MESSAGE);
+                BCBorrowerCardjTextField.setText("");
+                BCCheckoutjButton.setEnabled(false);
+                return;
+            }else
+                rs.next();
             int possession = rs.getInt("POSSESSION");
             if (possession == 3){
                 JOptionPane.showMessageDialog(this, "Borrower already holds the permitted quota.", "Limit Reached", JOptionPane.ERROR_MESSAGE);
@@ -783,13 +810,20 @@ public class BaseJFrame extends javax.swing.JFrame {
             //Issue the book
             String selected_isbn = (String) BCResjTableData.getValueAt(selected_row_index, 0);
             book_checkout_ps.clearParameters();
+            book_checkout_possession_update_ps.clearParameters();
+            book_checkout_availability_update_ps.clearParameters();
             book_checkout_ps.setString(1,selected_isbn);
             book_checkout_ps.setString(2, borrower_card_number);
             book_checkout_ps.executeUpdate();
+            book_checkout_possession_update_ps.setString(1,borrower_card_number);
+            book_checkout_possession_update_ps.executeUpdate();
+            book_checkout_availability_update_ps.setString(1,selected_isbn);
+            book_checkout_availability_update_ps.executeUpdate();
             BCResjTableData.setValueAt("OUT", selected_row_index, 3);
             JOptionPane.showMessageDialog(this, "Book has been loaned to borrower.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
             System.err.println("SQL Exception when Book Checkout button pressed.");
+            System.out.println(ex.toString());
         }
     }//GEN-LAST:event_BCCheckoutjButtonActionPerformed
 
@@ -799,11 +833,13 @@ public class BaseJFrame extends javax.swing.JFrame {
         //just in case:
         if (search_string.length()==0)
             return;
-        else;
+        else
+            BCResjTableData.setRowCount(0);
         
         String[] keywords = search_string.split(" ");
         String statement_string = "SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE";
         ArrayList<String> parameters = new ArrayList<>();
+        parameters.clear();
         ResultSet rs = null;
         HashMap ISBNset = new HashMap();
         Vector<Vector<String/*Object*/>> rsData = new Vector<>();
@@ -845,20 +881,38 @@ public class BaseJFrame extends javax.swing.JFrame {
                 }else;
             }else{
             //Multiple keywords case
+                boolean first_keyword = true;
                 for(String keyword:keywords){
+                    System.out.println(keyword);
                     if(keyword.matches("\\d{13}")){
-                        statement_string += " ISBN = ? OR TITLE LIKE ?";
+                        if(first_keyword){
+                            statement_string += " ISBN = ? OR TITLE LIKE ?";
+                            first_keyword = false;
+                        }else
+                            statement_string += " OR ISBN = ? OR TITLE LIKE ?";
                         parameters.add(keyword);
                         parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("\\d+")){
-                        statement_string += " TITLE LIKE ?";
+                        if(first_keyword){
+                            statement_string += " TITLE LIKE ?";
+                            first_keyword = false;
+                        }else
+                            statement_string += " OR TITLE LIKE ?";
                         parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("[a-zA-Z]+")){
-                        statement_string += " TITLE LIKE ? OR NAME LIKE ?";
+                        if(first_keyword){
+                            statement_string += " TITLE LIKE ? OR NAME LIKE ?";
+                            first_keyword = false;
+                        }else
+                            statement_string += " OR TITLE LIKE ? OR NAME LIKE ?";
                         parameters.add("%"+keyword+"%");
                         parameters.add("%"+keyword+"%");
                     }else if(keyword.matches("\\w+")){
-                        statement_string += " TITLE LIKE ?";
+                        if(first_keyword){
+                            statement_string += " TITLE LIKE ?";
+                            first_keyword = false;
+                        }else
+                            statement_string += " OR TITLE LIKE ?";
                         parameters.add("%"+keyword+"%");
                     }else;
                 }
@@ -866,8 +920,9 @@ public class BaseJFrame extends javax.swing.JFrame {
                 statement_string += " LIMIT 100";
                 multi_key_ps = dbConnection.prepareStatement(statement_string);
                 for(int i=0;i<parameters.size();++i)
-                    multi_key_ps.setString(i, parameters.get(i));
+                    multi_key_ps.setString(i+1, parameters.get(i));
                 
+                System.out.println(multi_key_ps.toString());
                 rs = multi_key_ps.executeQuery();
             }
             
@@ -944,8 +999,9 @@ public class BaseJFrame extends javax.swing.JFrame {
         String search_string = CheckInSearchjTextField.getText();
         if(search_string.length()==0)
             return;
-        else;
-        String keyword = search_string.split("")[0];
+        else
+            CheckInResjTableData.setRowCount(0);
+        String keyword = search_string.split(" ")[0];
         ResultSet rs = null;
         try{
             if(keyword.matches("\\d{13}")){
@@ -996,7 +1052,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             return;
         else;
         
-        int selected_Loan_ID = (int)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0);
+        int selected_Loan_ID = Integer.parseInt((String)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0));
         try {
             check_in_update_ps.clearParameters();
             check_in_update_ps.setInt(1,selected_Loan_ID);
@@ -1167,12 +1223,12 @@ public class BaseJFrame extends javax.swing.JFrame {
     private javax.swing.JTextField FirstNamejTextField;
     private javax.swing.JTextField LastNamejTextField;
     private javax.swing.JLabel NamejLabel;
-    private javax.swing.JLabel NamejLabel1;
     private javax.swing.JFormattedTextField PhonejFormattedTextField;
     private javax.swing.JLabel PhonejLabel;
     private javax.swing.JLabel RegisterNewUserjLabel;
     private javax.swing.JButton RegisterUserjButton;
     private javax.swing.JFormattedTextField SSNjFormattedTextField;
+    private javax.swing.JLabel SSNjLabel;
     private javax.swing.JTextField SearchjTextField;
     private javax.swing.JButton ShowFinesjButton;
     private javax.swing.JComboBox<String> StatejComboBox;
@@ -1185,6 +1241,8 @@ public class BaseJFrame extends javax.swing.JFrame {
     private DefaultTableModel FinesjTableData;
     private PreparedStatement borrower_possession_ps;
     private PreparedStatement book_checkout_ps;
+    private PreparedStatement book_checkout_possession_update_ps;
+    private PreparedStatement book_checkout_availability_update_ps;
     private PreparedStatement single_key_10_digits_ps;
     private PreparedStatement single_key_multi_digits_ps;
     private PreparedStatement single_key_alpha_ps;
@@ -1197,6 +1255,8 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement payFines_ps;
     private Statement getFines;
     private CallableStatement UpdateFinesBatchJob_cs;
+    private PreparedStatement getMaxCard_Id;
+    private PreparedStatement insertUser;
 
     private void createDBConnection() throws java.sql.SQLException, ClassNotFoundException{
         
@@ -1208,8 +1268,10 @@ public class BaseJFrame extends javax.swing.JFrame {
         //System.out.println(reader.getString("db.password"));
         dbConnection = java.sql.DriverManager.getConnection(reader.getString("db.url"),reader.getString("db.username"),reader.getString("db.password"));
         //dbConnection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/LIBRARY","librarian","booklover");
-        borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ? LIMIT 100");
+        borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
         book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
+        book_checkout_possession_update_ps = dbConnection.prepareStatement("UPDATE BORROWER SET POSSESSION = POSSESSION + 1 WHERE CARD_ID = ?");
+        book_checkout_availability_update_ps = dbConnection.prepareStatement("UPDATE BOOK SET AVAILABILITY = FALSE WHERE ISBN = ?");
         single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ? LIMIT 100");
         single_key_multi_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? LIMIT 100");
         single_key_alpha_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE TITLE LIKE ? OR NAME LIKE ? LIMIT 100");
@@ -1221,6 +1283,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         getFines = dbConnection.createStatement();
         payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");
         UpdateFinesBatchJob_cs = dbConnection.prepareCall(FINES_BATCH_JOB_STRING);
+        getMaxCard_Id = dbConnection.prepareStatement("SELECT MAX(CARD_ID) FROM BORROWER");
+        insertUser = dbConnection.prepareStatement("INSERT INTO BORROWER VALUES (?,?,?,?,?,0)");
     }
     
     public static final int MYSQL_DUPLICATE_PK_ERROR_CODE = 1062;
