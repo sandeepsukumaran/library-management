@@ -686,13 +686,34 @@ public class BaseJFrame extends javax.swing.JFrame {
         try{
             RegisterUserjButton.setEnabled(false);
             ResultSet rs = getMaxCard_Id.executeQuery();
-            int new_card_number = 0;
+            int new_card_number;
             if(!rs.isBeforeFirst())
                 new_card_number = 1;
             else{
                 rs.next();
                 new_card_number = rs.getInt(1)+1;
             }
+            //check if everything is entered:
+            /*
+                Person must always have first name, SSN, phone number, City, First line of address
+            */
+            if(SSNjFormattedTextField.getText().length()== 0){
+                RegisterUserjButton.setEnabled(true);
+                return;
+            }else if(FirstNamejTextField.getText().length() == 0){
+                RegisterUserjButton.setEnabled(true);
+                return;
+            }else if(AddressL1jTextField.getText().length() == 0){
+                RegisterUserjButton.setEnabled(true);
+                return;
+            }else if(CityjTextField.getText().length()==0){
+                RegisterUserjButton.setEnabled(true);
+                return;
+            }else if(PhonejFormattedTextField.getText().length()==0){
+                RegisterUserjButton.setEnabled(true);
+                return;
+            }else;
+            
             insertUser.setString(1, String.format("%06d",new_card_number));
             insertUser.setString(2, SSNjFormattedTextField.getText());
             insertUser.setString(3, FirstNamejTextField.getText()+" "+LastNamejTextField.getText());
@@ -796,6 +817,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             return;
         }else;
         
+        try{
         try {
             //Don't permit check out if borrower already owns 3 (MAX_BOOKS_PER_BORROWER) books
             borrower_possession_ps.clearParameters();
@@ -816,6 +838,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             }else;
             
             //Issue the book
+            dbConnection.setAutoCommit(false);
             String selected_isbn = (String) BCResjTableData.getValueAt(selected_row_index, 0);
             book_checkout_ps.clearParameters();
             book_checkout_possession_update_ps.clearParameters();
@@ -827,12 +850,16 @@ public class BaseJFrame extends javax.swing.JFrame {
             book_checkout_possession_update_ps.executeUpdate();
             book_checkout_availability_update_ps.setString(1,selected_isbn);
             book_checkout_availability_update_ps.executeUpdate();
+            dbConnection.commit();
             BCResjTableData.setValueAt("OUT", selected_row_index, 3);
             JOptionPane.showMessageDialog(this, "Book has been loaned to borrower.", "Success", JOptionPane.INFORMATION_MESSAGE);
-        } catch (SQLException ex) {
+        }catch (SQLException ex) {
             System.err.println("SQL Exception when Book Checkout button pressed.");
             System.out.println(ex.toString());
+        }finally{
+            dbConnection.setAutoCommit(true);
         }
+        }catch(SQLException e){System.err.println("Error renabling auto commit.");}
     }//GEN-LAST:event_BCCheckoutjButtonActionPerformed
 
     private void BCSearchjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BCSearchjButtonActionPerformed
@@ -1020,12 +1047,12 @@ public class BaseJFrame extends javax.swing.JFrame {
             }else if(keyword.matches("\\d+")){
                 //Borrower card no entered
                 check_in_Card_Id_ps.clearParameters();
-                check_in_Card_Id_ps.setString(1,keyword);
+                check_in_Card_Id_ps.setString(1,String.format("%06d",Integer.parseInt(keyword)));
                 rs = check_in_Card_Id_ps.executeQuery();
             }else if(keyword.matches("[a-zA-z]+")){
                 //name of borrower entered
                 check_in_Name_ps.clearParameters();
-                check_in_Name_ps.setString(1,"\'%"+keyword+"\'%");
+                check_in_Name_ps.setString(1,"%"+keyword+"%");
                 rs = check_in_Name_ps.executeQuery();
             }else{
                 JOptionPane.showMessageDialog(this, "Search by ISBN, Borrower Card No., Borrower name only.", "Invalid Search String", JOptionPane.ERROR_MESSAGE);
