@@ -531,18 +531,17 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="CheckInjButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="CheckInjScrollPane" pref="0" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="CheckInSearchjTextField" min="-2" pref="252" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="CheckInSearchjButton" min="-2" pref="73" max="-2" attributes="0"/>
+                              <Component id="CheckInSearchjButton" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="CheckInjScrollPane" alignment="0" min="-2" pref="331" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="CheckInjButton" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -808,7 +807,7 @@
                     </Property>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="FinesjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time&#xd;&#xa;&#xd;&#xa;FinesjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){&#xd;&#xa;    //when each row is selected fill in the borrower id and number fields appropriately.&#xd;&#xa;    public void valueChanged(ListSelectionEvent e){&#xd;&#xa;        FinesBorrowerIDjTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 0));&#xd;&#xa;        FinesPayAmountjFormattedTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 2));&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="FinesjTable.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);&#xd;&#xa;//Only allow one row to be selected at a time&#xd;&#xa;&#xd;&#xa;FinesjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){&#xd;&#xa;    //when each row is selected fill in the borrower id and number fields appropriately.&#xd;&#xa;    public void valueChanged(ListSelectionEvent e){&#xd;&#xa;        if(FinesjTable.getSelectedRowCount()==0){&#xd;&#xa;            FinesBorrowerIDjTextField.setText(&quot;&quot;);&#xd;&#xa;            FinesPayAmountjFormattedTextField.setText(&quot;0.00&quot;);&#xd;&#xa;            return;&#xd;&#xa;        }else;&#xd;&#xa;        FinesBorrowerIDjTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 0));&#xd;&#xa;        FinesPayAmountjFormattedTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 2));&#xd;&#xa;    }&#xd;&#xa;});&#xd;&#xa;"/>
                     <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="String[] FinesjTableColumnNames = {&quot;Borrower ID&quot;, &quot;Total Fine&quot;, &quot;Payable Fine&quot;};&#xd;&#xa;FinesjTableData = new DefaultTableModel(FinesjTableColumnNames,5){&#xd;&#xa;    public boolean isCellEditable(int row,int col){&#xd;&#xa;        return false;&#xd;&#xa;    }&#xd;&#xa;};"/>
                   </AuxValues>
                 </Component>

@@ -46,6 +46,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         }catch(java.sql.SQLException|ClassNotFoundException e){
             //javax.swing.JOptionPane.showMessageDialog(this,"Unable to establish database connection.","DB error",javax.swing.JOptionPane.ERROR_MESSAGE);
             System.err.println("Unable to establish database connection.");
+            System.out.println(e.toString());
             System.exit(0);
         }
     }
@@ -176,6 +177,11 @@ public class BaseJFrame extends javax.swing.JFrame {
         FinesjTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             //when each row is selected fill in the borrower id and number fields appropriately.
             public void valueChanged(ListSelectionEvent e){
+                if(FinesjTable.getSelectedRowCount()==0){
+                    FinesBorrowerIDjTextField.setText("");
+                    FinesPayAmountjFormattedTextField.setText("0.00");
+                    return;
+                }else;
                 FinesBorrowerIDjTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 0));
                 FinesPayAmountjFormattedTextField.setText((String)FinesjTable.getValueAt(FinesjTable.getSelectedRow(), 2));
             }
@@ -491,15 +497,14 @@ public class BaseJFrame extends javax.swing.JFrame {
             .addGroup(CheckInjPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CheckInjPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CheckInjPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(CheckInjButton))
+                    .addComponent(CheckInjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(CheckInjPanelLayout.createSequentialGroup()
                         .addComponent(CheckInSearchjTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(CheckInSearchjButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(CheckInjScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CheckInjPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(CheckInjButton)
+                        .addComponent(CheckInSearchjButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         CheckInjPanelLayout.setVerticalGroup(
@@ -782,6 +787,9 @@ public class BaseJFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a book from table.", "No selection", JOptionPane.ERROR_MESSAGE);
             return;
         }else;
+        if(((String)BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3)).equals("OUT"))
+            return;
+        else;
         //Might not be necessary
         if(BCResjTable.getSelectedRowCount()>1){
             JOptionPane.showMessageDialog(this, "Please select a single book from table.", "Multiple selection", JOptionPane.ERROR_MESSAGE);
@@ -1039,7 +1047,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 CheckInResjTableData.addRow(row);
             }
             //Hopefully this should bring about an update to the GUI table. If not, add code to do that explicitly below
-            //CheckInjTable.setModel(BCResjTableData);
+            //CheckInjTable.setModel(CheckInResjTableData);
             System.out.println("Check In result table populated.");
         }catch(SQLException sqle){
             System.err.println("SQL Exception in Check-In Search button press.");
@@ -1071,6 +1079,14 @@ public class BaseJFrame extends javax.swing.JFrame {
         */
         ResultSet rs = null;
         HashMap totalFines = new HashMap();
+        totalFines.clear(); //System.out.println("So far so good1");
+        //FinesjTable.clearSelection();
+        //FinesjTableData.setRowCount(5);
+        //FinesjTable.removeAll();
+        FinesjTableData.setRowCount(0);//System.out.println("So far so good1");
+        /*for(int i=FinesjTableData.getRowCount()-1;i>=0;--i)
+            System.out.println(i);*///FinesjTableData.removeRow(i);
+        //System.out.println("Table should be empty now.");
         try{
             if(FinesFilterAlljRadioButton.isSelected())
                 rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID LIMIT 100");
@@ -1094,22 +1110,24 @@ public class BaseJFrame extends javax.swing.JFrame {
             rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID LIMIT 100");
             
             //populate table
-            FinesjTableData.setRowCount(0);
             String card_id, amt;
-            Vector<String> row = new Vector<>();
             while(rs.next()){
+                Vector<String> row = new Vector<>();
                 row.clear();
                 card_id = rs.getString(1);
                 amt = rs.getString(2);
                 row.add(card_id); //borrower card no.
                 row.add((String)totalFines.get(card_id)); //total fine amount
                 row.add(amt); //payable fine amount
-                FinesjTableData.addRow(row);
+                FinesjTableData.addRow(row); System.out.println(row);
                 totalFines.remove(card_id); //delete the card_id from fines map
             }
-            
+            System.out.println("Filled in all payable");
+            for(Object key : totalFines.keySet())
+                System.out.println(key);
             //fill in rest - those with no payable fines (probably still holding on to books) with 0.00
             for(Object key : totalFines.keySet()){
+                Vector<String> row = new Vector<>();
                 row.clear();
                 row.add((String)key);
                 row.add((String)totalFines.get(key));
@@ -1150,6 +1168,7 @@ public class BaseJFrame extends javax.swing.JFrame {
     private void FinesUpdatejButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FinesUpdatejButtonActionPerformed
         try{
             UpdateFinesBatchJob_cs.execute();
+            JOptionPane.showMessageDialog(this, "Fines updated.", "Job Complete", JOptionPane.INFORMATION_MESSAGE);
         }catch(SQLException e){
             System.err.println("SQL Exception in Update Fines button ActionPerformed.");
         }
@@ -1282,7 +1301,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
         getFines = dbConnection.createStatement();
         payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");
-        UpdateFinesBatchJob_cs = dbConnection.prepareCall(FINES_BATCH_JOB_STRING);
+        //UpdateFinesBatchJob_cs = dbConnection.prepareCall(FINES_BATCH_JOB_STRING);
+        UpdateFinesBatchJob_cs = dbConnection.prepareCall("{CALL LIBRARY.FINES_BATCH()}");
         getMaxCard_Id = dbConnection.prepareStatement("SELECT MAX(CARD_ID) FROM BORROWER");
         insertUser = dbConnection.prepareStatement("INSERT INTO BORROWER VALUES (?,?,?,?,?,0)");
     }
