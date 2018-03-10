@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.7.21, for Win64 (x86_64)
 --
--- Host: localhost    Database: library
+-- Host: localhost    Database: LIBRARY
 -- ------------------------------------------------------
 -- Server version	5.7.21-log
 
@@ -77,7 +77,7 @@ CREATE TABLE `book_authors` (
   `ISBN` char(13) NOT NULL,
   PRIMARY KEY (`AUTHOR_ID`,`ISBN`),
   KEY `ISBN` (`ISBN`),
-  CONSTRAINT `FK_BOOK_AUTHORS` FOREIGN KEY (`AUTHOR_ID`) REFERENCES `authors` (`AUTHOR_ID`),
+  CONSTRAINT `FK_BOOK_AUTHORS` FOREIGN KEY (`AUTHOR_ID`) REFERENCES `authors` (`AUTHOR_ID`) ON DELETE CASCADE,
   CONSTRAINT `book_authors_ibfk_1` FOREIGN KEY (`ISBN`) REFERENCES `book` (`ISBN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -218,4 +218,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-09  2:07:31
+-- Dump completed on 2018-03-09 23:58:17
