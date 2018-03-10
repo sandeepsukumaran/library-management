@@ -346,6 +346,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         BooksCheckoutjLabel.setText("Books Checkout  ");
         BooksCheckoutjLabel.setOpaque(true);
 
+        SearchjTextField.setToolTipText("Enter ISBN, Book name, Author name");
         SearchjTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 SearchjTextFieldFocusGained(evt);
@@ -451,6 +452,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         CheckInjLabel.setText("Books Check-In  ");
         CheckInjLabel.setOpaque(true);
 
+        CheckInSearchjTextField.setToolTipText("Enter ISBN, Borrower Card No.,Borrower name");
         CheckInSearchjTextField.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 CheckInSearchjTextFieldFocusGained(evt);
@@ -808,9 +810,10 @@ public class BaseJFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select a book from table.", "No selection", JOptionPane.ERROR_MESSAGE);
             return;
         }else;
-        if(((String)BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3)).equals("OUT"))
+        if(((String)BCResjTableData.getValueAt(BCResjTable.getSelectedRow(), 3)).equals("OUT")){
+            JOptionPane.showMessageDialog(this, "Selected book is not available.", "Book Unavailable", JOptionPane.ERROR_MESSAGE);
             return;
-        else;
+        }else;
         //Might not be necessary
         if(BCResjTable.getSelectedRowCount()>1){
             JOptionPane.showMessageDialog(this, "Please select a single book from table.", "Multiple selection", JOptionPane.ERROR_MESSAGE);
@@ -901,14 +904,14 @@ public class BaseJFrame extends javax.swing.JFrame {
                     single_key_multi_digits_ps.clearParameters();
                     single_key_multi_digits_ps.setString(1, "%"+keyword+"%");
                     rs = single_key_multi_digits_ps.executeQuery();
-                }else if(keyword.matches("[a-zA-Z]+")){
+                }else if(keyword.matches("[a-zA-Z-]+")){
                     //title or author entered
                     single_key_alpha_ps.clearParameters();
                     single_key_alpha_ps.setString(1, "%"+keyword+"%");
                     single_key_alpha_ps.setString(2, "%"+keyword+"%");
                     System.out.println(single_key_alpha_ps.toString());
                     rs = single_key_alpha_ps.executeQuery();
-                }else if(keyword.matches("\\w+")){
+                }else if(keyword.matches("[a-zA-Z_0-9-]+")){
                     //title entered
                     single_key_alnum_ps.clearParameters();
                     single_key_alnum_ps.setString(1, "%"+keyword+"%");
@@ -934,7 +937,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                         }else
                             statement_string += " OR TITLE LIKE ?";
                         parameters.add("%"+keyword+"%");
-                    }else if(keyword.matches("[a-zA-Z]+")){
+                    }else if(keyword.matches("[a-zA-Z-]+")){
                         if(first_keyword){
                             statement_string += " TITLE LIKE ? OR NAME LIKE ?";
                             first_keyword = false;
@@ -942,7 +945,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                             statement_string += " OR TITLE LIKE ? OR NAME LIKE ?";
                         parameters.add("%"+keyword+"%");
                         parameters.add("%"+keyword+"%");
-                    }else if(keyword.matches("\\w+")){
+                    }else if(keyword.matches("[a-zA-Z_0-9-]+")){
                         if(first_keyword){
                             statement_string += " TITLE LIKE ?";
                             first_keyword = false;
@@ -1182,6 +1185,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             
             //update current data shown in table
             FinesjTableData.setValueAt("0.00", FinesjTable.getSelectedRow(), 2);
+            FinesPayAmountjFormattedTextField.setText("0.00");
             if(FinesFilterUnpaidjRadioButton.isSelected()){
                 Float tot = Float.parseFloat((String)FinesjTableData.getValueAt(FinesjTable.getSelectedRow(), 1));
                 Float amount = Float.parseFloat((String)FinesjTableData.getValueAt(FinesjTable.getSelectedRow(), 2));

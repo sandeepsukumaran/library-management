@@ -426,6 +426,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="SearchjTextField">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="Enter ISBN, Book name, Author name"/>
+              </Properties>
               <Events>
                 <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="SearchjTextFieldFocusGained"/>
                 <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="SearchjTextFieldFocusLost"/>
@@ -583,6 +586,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="CheckInSearchjTextField">
+              <Properties>
+                <Property name="toolTipText" type="java.lang.String" value="Enter ISBN, Borrower Card No.,Borrower name"/>
+              </Properties>
               <Events>
                 <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="CheckInSearchjTextFieldFocusGained"/>
                 <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="CheckInSearchjTextFieldFocusLost"/>
