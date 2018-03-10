@@ -700,18 +700,23 @@ public class BaseJFrame extends javax.swing.JFrame {
                 Person must always have first name, SSN, phone number, City, First line of address
             */
             if(SSNjFormattedTextField.getText().length()== 0){
+                JOptionPane.showMessageDialog(this, "Please enter SSN.", "Missing details", JOptionPane.INFORMATION_MESSAGE);
                 RegisterUserjButton.setEnabled(true);
                 return;
             }else if(FirstNamejTextField.getText().length() == 0){
+                JOptionPane.showMessageDialog(this, "Please enter first name.", "Missing details", JOptionPane.INFORMATION_MESSAGE);
                 RegisterUserjButton.setEnabled(true);
                 return;
             }else if(AddressL1jTextField.getText().length() == 0){
+                JOptionPane.showMessageDialog(this, "Please enter first line of address.", "Missing details", JOptionPane.INFORMATION_MESSAGE);
                 RegisterUserjButton.setEnabled(true);
                 return;
             }else if(CityjTextField.getText().length()==0){
+                JOptionPane.showMessageDialog(this, "Please enter city.", "Missing details", JOptionPane.INFORMATION_MESSAGE);
                 RegisterUserjButton.setEnabled(true);
                 return;
             }else if(PhonejFormattedTextField.getText().length()==0){
+                JOptionPane.showMessageDialog(this, "Please enter phone number.", "Missing details", JOptionPane.INFORMATION_MESSAGE);
                 RegisterUserjButton.setEnabled(true);
                 return;
             }else;
