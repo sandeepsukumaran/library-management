@@ -1124,9 +1124,9 @@ public class BaseJFrame extends javax.swing.JFrame {
         //System.out.println("Table should be empty now.");
         try{
             if(FinesFilterAlljRadioButton.isSelected())
-                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID LIMIT 100");
+                rs = getFinesALL.executeQuery();
             else
-                rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID LIMIT 100");
+                rs = getFinesUNPAID.executeQuery();
             
             
             if(!rs.isBeforeFirst()){
@@ -1142,7 +1142,7 @@ public class BaseJFrame extends javax.swing.JFrame {
             }
             
             //get payable fine amount
-            rs = getFines.executeQuery("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID LIMIT 100");
+            rs = getFinesPAYABLE.executeQuery();
             
             //populate table
             String card_id, amt;
@@ -1308,7 +1308,9 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement check_in_Name_ps;
     private PreparedStatement check_in_update_ps;
     private PreparedStatement payFines_ps;
-    private Statement getFines;
+    private PreparedStatement getFinesPAYABLE;
+    private PreparedStatement getFinesALL;
+    private PreparedStatement getFinesUNPAID;
     private CallableStatement UpdateFinesBatchJob_cs;
     private PreparedStatement getMaxCard_Id;
     private PreparedStatement insertUser;
@@ -1335,7 +1337,9 @@ public class BaseJFrame extends javax.swing.JFrame {
         check_in_Card_Id_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND CARD_ID = ? LIMIT 100");
         check_in_Name_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, BL.CARD_ID FROM BOOK_LOANS BL WHERE DATE_IN IS NULL AND CARD_ID IN (SELECT B.CARD_ID FROM BORROWER B WHERE B.BNAME LIKE ?) LIMIT 100");
         check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
-        getFines = dbConnection.createStatement();
+        getFinesPAYABLE = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID LIMIT 100");
+        getFinesALL = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID LIMIT 100");
+        getFinesUNPAID = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID LIMIT 100");
         payFines_ps = dbConnection.prepareStatement("UPDATE FINES SET PAID = TRUE WHERE PAID = FALSE AND LOAN_ID IN (SELECT V.LOAN_ID FROM BOOK_LOANS_LITE V WHERE V.DATE_IN IS NOT NULL AND V.CARD_ID = ?)");
         //UpdateFinesBatchJob_cs = dbConnection.prepareCall(FINES_BATCH_JOB_STRING);
         UpdateFinesBatchJob_cs = dbConnection.prepareCall("{CALL LIBRARY.FINES_BATCH()}");
