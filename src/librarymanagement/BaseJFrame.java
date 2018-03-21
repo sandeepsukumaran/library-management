@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -916,7 +915,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                     single_key_alpha_ps.setString(2, "%"+keyword+"%");
                     System.out.println(single_key_alpha_ps.toString());
                     rs = single_key_alpha_ps.executeQuery();
-                }else if(keyword.matches("[a-zA-Z_0-9-]+")){
+                }else if(keyword.matches("[a-zA-Z_0-9-,;&]+")){
                     //title entered
                     single_key_alnum_ps.clearParameters();
                     single_key_alnum_ps.setString(1, "%"+keyword+"%");
@@ -950,7 +949,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                             statement_string += " OR TITLE LIKE ? OR NAME LIKE ?";
                         parameters.add("%"+keyword+"%");
                         parameters.add("%"+keyword+"%");
-                    }else if(keyword.matches("[a-zA-Z_0-9-]+")){
+                    }else if(keyword.matches("[a-zA-Z_0-9-,;&]+")){
                         if(first_keyword){
                             statement_string += " TITLE LIKE ?";
                             first_keyword = false;
