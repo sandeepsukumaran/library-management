@@ -908,14 +908,14 @@ public class BaseJFrame extends javax.swing.JFrame {
                     single_key_multi_digits_ps.clearParameters();
                     single_key_multi_digits_ps.setString(1, "%"+keyword+"%");
                     rs = single_key_multi_digits_ps.executeQuery();
-                }else if(keyword.matches("[a-zA-Z-]+")){
+                }else if(keyword.matches("[\\p{Alpha}-\'\"]+")){
                     //title or author entered
                     single_key_alpha_ps.clearParameters();
                     single_key_alpha_ps.setString(1, "%"+keyword+"%");
                     single_key_alpha_ps.setString(2, "%"+keyword+"%");
                     System.out.println(single_key_alpha_ps.toString());
                     rs = single_key_alpha_ps.executeQuery();
-                }else if(keyword.matches("[a-zA-Z_0-9-,;&]+")){
+                }else if(keyword.matches("[\\p{Alnum}\\p{Punct}]+")){
                     //title entered
                     single_key_alnum_ps.clearParameters();
                     single_key_alnum_ps.setString(1, "%"+keyword+"%");
@@ -941,7 +941,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                         }else
                             statement_string += " OR TITLE LIKE ?";
                         parameters.add("%"+keyword+"%");
-                    }else if(keyword.matches("[a-zA-Z-]+")){
+                    }else if(keyword.matches("[\\p{Alpha}-\'\"]+")){
                         if(first_keyword){
                             statement_string += " TITLE LIKE ? OR NAME LIKE ?";
                             first_keyword = false;
@@ -949,7 +949,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                             statement_string += " OR TITLE LIKE ? OR NAME LIKE ?";
                         parameters.add("%"+keyword+"%");
                         parameters.add("%"+keyword+"%");
-                    }else if(keyword.matches("[a-zA-Z_0-9-,;&]+")){
+                    }else if(keyword.matches("[\\p{Alnum}\\p{Punct}]+")){
                         if(first_keyword){
                             statement_string += " TITLE LIKE ?";
                             first_keyword = false;
@@ -1056,7 +1056,7 @@ public class BaseJFrame extends javax.swing.JFrame {
                 check_in_Card_Id_ps.clearParameters();
                 check_in_Card_Id_ps.setString(1,String.format("%06d",Integer.parseInt(keyword)));
                 rs = check_in_Card_Id_ps.executeQuery();
-            }else if(keyword.matches("[a-zA-z]+")){
+            }else if(keyword.matches("[\\p{Alpha}-\'\"]+")){
                 //name of borrower entered
                 check_in_Name_ps.clearParameters();
                 check_in_Name_ps.setString(1,"%"+keyword+"%");
