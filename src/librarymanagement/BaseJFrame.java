@@ -1095,15 +1095,27 @@ public class BaseJFrame extends javax.swing.JFrame {
         else;
         
         int selected_Loan_ID = Integer.parseInt((String)CheckInjTable.getValueAt(CheckInSelectedRowIndex, 0));
-        try {
+        String selected_isbn = (String)CheckInjTable.getValueAt(CheckInSelectedRowIndex,1);
+        String borrower_card_number = (String)CheckInjTable.getValueAt(CheckInSelectedRowIndex,2);
+        try{try {
+            dbConnection.setAutoCommit(false);
+            check_in_possession_update_ps.clearParameters();
+            check_in_availability_update_ps.clearParameters();
+            check_in_possession_update_ps.setString(1,borrower_card_number);
+            check_in_possession_update_ps.executeUpdate();
+            check_in_availability_update_ps.setString(1,selected_isbn);
+            check_in_availability_update_ps.executeUpdate();
             check_in_update_ps.clearParameters();
             check_in_update_ps.setInt(1,selected_Loan_ID);
             check_in_update_ps.executeUpdate();
+            dbConnection.commit();
             CheckInResjTableData.removeRow(CheckInSelectedRowIndex);
             JOptionPane.showMessageDialog(this, "Book checked in.", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
             System.err.println("SQL Exception in Check in button actionPerformed.");
-        }
+        } finally{
+            dbConnection.setAutoCommit(true);
+        }}catch(SQLException e){System.err.println("Error reenabling auto commit");}
     }//GEN-LAST:event_CheckInjButtonActionPerformed
 
     private void ShowFinesjButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ShowFinesjButtonActionPerformed
@@ -1306,6 +1318,8 @@ public class BaseJFrame extends javax.swing.JFrame {
     private PreparedStatement check_in_Card_Id_ps;
     private PreparedStatement check_in_Name_ps;
     private PreparedStatement check_in_update_ps;
+    private PreparedStatement check_in_possession_update_ps;
+    private PreparedStatement check_in_availability_update_ps;
     private PreparedStatement payFines_ps;
     private PreparedStatement getFinesPAYABLE;
     private PreparedStatement getFinesALL;
@@ -1325,7 +1339,7 @@ public class BaseJFrame extends javax.swing.JFrame {
         dbConnection = java.sql.DriverManager.getConnection(reader.getString("db.url"),reader.getString("db.username"),reader.getString("db.password"));
         //dbConnection = java.sql.DriverManager.getConnection("jdbc:mysql://localhost:3306/LIBRARY","librarian","booklover");
         borrower_possession_ps = dbConnection.prepareStatement("SELECT POSSESSION FROM BORROWER WHERE CARD_ID = ?");
-        book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+14)");
+        book_checkout_ps = dbConnection.prepareStatement("INSERT INTO BOOK_LOANS(ISBN , CARD_ID , DATE_OUT , DUE_DATE) VALUES(?,?,CURDATE(),CURDATE()+ INTERVAL 14 DAY)");
         book_checkout_possession_update_ps = dbConnection.prepareStatement("UPDATE BORROWER SET POSSESSION = POSSESSION + 1 WHERE CARD_ID = ?");
         book_checkout_availability_update_ps = dbConnection.prepareStatement("UPDATE BOOK SET AVAILABILITY = FALSE WHERE ISBN = ?");
         single_key_10_digits_ps = dbConnection.prepareStatement("SELECT ISBN, TITLE, NAME, AVAILABILITY FROM BOOK NATURAL JOIN BOOK_AUTHORS NATURAL JOIN AUTHORS WHERE ISBN = ? OR TITLE LIKE ? LIMIT 100");
@@ -1336,6 +1350,8 @@ public class BaseJFrame extends javax.swing.JFrame {
         check_in_Card_Id_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, CARD_ID FROM BOOK_LOANS WHERE DATE_IN IS NULL AND CARD_ID = ? LIMIT 100");
         check_in_Name_ps = dbConnection.prepareStatement("SELECT LOAN_ID, ISBN, BL.CARD_ID FROM BOOK_LOANS BL WHERE DATE_IN IS NULL AND CARD_ID IN (SELECT B.CARD_ID FROM BORROWER B WHERE B.BNAME LIKE ?) LIMIT 100");
         check_in_update_ps = dbConnection.prepareStatement("UPDATE BOOK_LOANS SET DATE_IN = CURDATE() WHERE LOAN_ID = ?");
+        check_in_possession_update_ps = dbConnection.prepareStatement("UPDATE BORROWER SET POSSESSION = POSSESSION - 1 WHERE CARD_ID = ?");
+        check_in_availability_update_ps = dbConnection.prepareStatement("UPDATE BOOK SET AVAILABILITY = TRUE WHERE ISBN = ?");
         getFinesPAYABLE = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE AND DATE_IN IS NOT NULL GROUP BY CARD_ID LIMIT 100");
         getFinesALL = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE GROUP BY CARD_ID LIMIT 100");
         getFinesUNPAID = dbConnection.prepareStatement("SELECT CARD_ID, SUM(FINE_AMT) FROM FINES NATURAL JOIN BOOK_LOANS_LITE WHERE PAID = FALSE GROUP BY CARD_ID LIMIT 100");
